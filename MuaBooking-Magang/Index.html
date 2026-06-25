@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MUA Booking - IMOMAKEUP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .text-mua-pink { color: #E61E53; }
+        .bg-mua-pink { background-color: #E61E53; }
+        .hover\:bg-mua-pink-dark:hover { background-color: #C11440; }
+        .border-mua-pink { border-color: #E61E53; }
+        .focus\:border-mua-pink:focus { border-color: #E61E53; }
+        .focus\:ring-mua-pink:focus { --tw-ring-color: #E61E53; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-700 font-sans min-h-screen">
+
+    <div id="screen-auth" class="fixed inset-0 bg-pink-50/60 flex items-center justify-center p-4 z-[999]">
+        <div id="box-login" class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-xl border border-pink-100 text-center space-y-6">
+            <div class="flex flex-col items-center gap-1">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-heart text-mua-pink text-2xl animate-pulse"></i>
+                    <span class="text-xl font-black text-slate-800 tracking-tight">MUA Booking</span>
+                </div>
+                <p class="text-[10px] text-slate-400 font-medium">Make Up Artist Portal</p>
+            </div>
+
+            <div class="space-y-1">
+                <h2 class="text-lg font-bold text-slate-800">Selamat Datang ❤️</h2>
+                <p class="text-xs text-slate-400">Silakan login untuk melanjutkan booking makeup Anda</p>
+            </div>
+
+            <div class="flex border-b text-xs font-bold">
+                <button class="w-1/2 pb-2 border-b-2 border-mua-pink text-mua-pink">Login</button>
+                <button onclick="switchAuthTab('reg')" class="w-1/2 pb-2 text-slate-400 hover:text-slate-600">Daftar Akun</button>
+            </div>
+
+            <div class="space-y-4 text-left">
+                <div>
+                    <label class="text-[11px] font-bold text-slate-500 block mb-1">No WhatsApp</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 text-xs"><i class="fa-brands fa-whatsapp"></i></span>
+                        <input type="text" id="login-wa" placeholder="Masukkan no WhatsApp aktif" class="w-full pl-9 pr-4 py-2.5 bg-slate-50 border rounded-xl text-xs focus:outline-none focus:border-mua-pink">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-[11px] font-bold text-slate-500 block mb-1">Password</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 text-xs"><i class="fa-solid fa-lock"></i></span>
+                        <input type="password" id="login-pass" placeholder="Masukkan password" class="w-full pl-9 pr-10 py-2.5 bg-slate-50 border rounded-xl text-xs focus:outline-none focus:border-mua-pink">
+                        <button onclick="togglePass('login-pass')" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400"><i class="fa-solid fa-eye text-xs"></i></button>
+                    </div>
+                </div>
+                <p id="err-login" class="text-[10px] text-red-500 font-bold hidden"></p>
+            </div>
+
+            <button onclick="prosesLogin()" class="w-full bg-mua-pink text-white py-3 rounded-xl text-xs font-bold shadow-md shadow-pink-200 hover:bg-mua-pink-dark transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-right-to-bracket"></i> Login
+            </button>
+            
+            <p class="text-[11px] text-slate-400">Belum punya akun? <button onclick="switchAuthTab('reg')" class="text-mua-pink font-bold">Daftar sekarang</button></p>
+        </div>
+
+        <div id="box-reg" class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-xl border border-pink-100 text-center space-y-4 hidden">
+            <div class="space-y-1">
+                <h2 class="text-lg font-bold text-slate-800">Daftar Akun Baru ✨</h2>
+                <p class="text-xs text-slate-400">Buat akun untuk memesan & memantau status booking</p>
+            </div>
+
+            <div class="space-y-3 text-left">
+                <div>
+                    <label class="text-[11px] font-bold text-slate-500 block mb-1">Nama Lengkap</label>
+                    <input type="text" id="reg-nama" placeholder="Masukkan nama lengkap Anda" class="w-full px-4 py-2.5 bg-slate-50 border rounded-xl text-xs focus:outline-none focus:border-mua-pink">
+                </div>
+                <div>
+                    <label class="text-[11px] font-bold text-slate-500 block mb-1">No WhatsApp</label>
+                    <input type="text" id="reg-wa" placeholder="Contoh: 628123456789" class="w-full px-4 py-2.5 bg-slate-50 border rounded-xl text-xs focus:outline-none focus:border-mua-pink">
+                </div>
+                <div>
+                    <label class="text-[11px] font-bold text-slate-500 block mb-1">Password</label>
+                    <input type="password" id="reg-pass" placeholder="Buat password unik" class="w-full px-4 py-2.5 bg-slate-50 border rounded-xl text-xs focus:outline-none focus:border-mua-pink">
+                </div>
+                <p id="msg-reg" class="text-[10px] font-bold text-center hidden"></p>
+            </div>
+
+            <button onclick="prosesRegister()" class="w-full bg-slate-800 text-white py-3 rounded-xl text-xs font-bold hover:bg-slate-700 transition">Daftar Sekarang</button>
+            <button onclick="switchAuthTab('login')" class="text-[11px] text-mua-pink font-bold block mx-auto">Kembali ke Halaman Login</button>
+        </div>
+    </div>
+
+
+    <div id="panel-aplikasi" class="hidden min-h-screen flex flex-col">
+        
+        <header id="nav-customer" class="bg-white border-b sticky top-0 z-50 px-6 py-4 flex justify-between items-center hidden">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-pink-100 rounded-xl flex items-center justify-center text-mua-pink font-black text-xs">MUA</div>
+                <div>
+                    <h1 class="text-xs font-black text-slate-800 leading-none">MUA Booking</h1>
+                    <span class="text-[9px] text-slate-400 font-medium">Make Up Artist</span>
+                </div>
+            </div>
+            <nav class="flex items-center gap-6 text-xs font-bold">
+                <button onclick="switchPage('cust-home')" class="text-mua-pink">Home</button>
+                <button onclick="switchPage('cust-booking')" class="text-slate-500 hover:text-mua-pink">Booking</button>
+                <button onclick="switchPage('cust-cek')" class="text-slate-500 hover:text-mua-pink">Cek Booking</button>
+            </nav>
+            <div class="flex items-center gap-3">
+                <div class="text-right">
+                    <p class="text-[11px] font-black text-slate-800" id="cust-profile-name">-</p>
+                    <p class="text-[9px] text-slate-400">Selamat datang kembali!</p>
+                </div>
+                <button onclick="logout()" class="w-7 h-7 bg-slate-100 rounded-full text-slate-500 text-xs hover:bg-red-50 hover:text-red-500 transition"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </header>
+
+        <div id="workspace-customer" class="flex-1 hidden">
+            
+            <section id="page-cust-home" class="max-w-5xl mx-auto px-6 py-12 space-y-16 hidden">
+                <div class="grid md:grid-cols-2 gap-8 items-center bg-gradient-to-br from-pink-50/40 via-white to-white p-8 rounded-3xl border border-pink-100/50">
+                    <div class="space-y-6">
+                        <span class="text-[10px] font-extrabold uppercase tracking-widest text-mua-pink bg-pink-50 px-3 py-1 rounded-full">Make Your Special Day</span>
+                        <h2 class="text-4xl font-black text-slate-900 leading-tight">More Beautiful<br>With Us ✨</h2>
+                        <p class="text-xs text-slate-400 leading-relaxed">Layanan makeup profesional untuk berbagai momen spesial Anda. Kami menggunakan produk kosmetik premium original untuk memberikan hasil akhir yang anggun, tahan lama, dan memukau.</p>
+                        <div class="flex gap-3">
+                            <button onclick="switchPage('cust-booking')" class="bg-mua-pink text-white px-5 py-3 rounded-xl text-xs font-bold shadow-lg shadow-pink-100 flex items-center gap-2 hover:bg-mua-pink-dark transition"><i class="fa-solid fa-calendar-days"></i> Booking Sekarang</button>
+                            <button onclick="switchPage('cust-cek')" class="bg-white border border-slate-200 text-slate-600 px-5 py-3 rounded-xl text-xs font-bold hover:bg-slate-50 transition">Lihat Status Booking</button>
+                        </div>
+                    </div>
+                    <div class="flex justify-center">
+                        <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=500&q=80" alt="MUA Model" class="rounded-3xl shadow-2xl max-h-72 object-cover border-4 border-white">
+                    </div>
+                </div>
+                <div class="grid grid-cols-4 gap-4 text-center">
+                    <div class="bg-white p-4 rounded-2xl border shadow-sm space-y-2"><i class="fa-solid fa-user-tie text-mua-pink text-lg"></i><h4 class="text-xs font-bold text-slate-800">Makeup Profesional</h4><p class="text-[10px] text-slate-400">MUA berpengalaman & bersertifikat</p></div>
+                    <div class="bg-white p-4 rounded-2xl border shadow-sm space-y-2"><i class="fa-solid fa-wand-magic text-mua-pink text-lg"></i><h4 class="text-xs font-bold text-slate-800">Produk Berkualitas</h4><p class="text-[10px] text-slate-400">Menggunakan produk premium terpercaya</p></div>
+                    <div class="bg-white p-4 rounded-2xl border shadow-sm space-y-2"><i class="fa-solid fa-face-smile text-mua-pink text-lg"></i><h4 class="text-xs font-bold text-slate-800">Layanan Terbaik</h4><p class="text-[10px] text-slate-400">Pelayanan ramah dan hasil memuaskan</p></div>
+                    <div class="bg-white p-4 rounded-2xl border shadow-sm space-y-2"><i class="fa-solid fa-clock text-mua-pink text-lg"></i><h4 class="text-xs font-bold text-slate-800">Tepat Waktu</h4><p class="text-[10px] text-slate-400">Kami selalu on-time sesuai jadwal Anda</p></div>
+                </div>
+            </section>
+
+            <section id="page-cust-booking" class="max-w-5xl mx-auto px-6 py-10 space-y-6 hidden">
+                <h3 class="text-lg font-black text-slate-800">Halaman Booking Sesi</h3>
+                <div class="grid md:grid-cols-12 gap-6 items-start">
+                    
+                    <div class="bg-white p-6 rounded-2xl border shadow-sm md:col-span-5 space-y-4">
+                        <h4 class="text-xs font-black text-slate-400 uppercase border-b pb-2">Form Booking</h4>
+                        <div>
+                            <label class="text-[11px] font-bold text-slate-600 block mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
+                            <input type="text" id="fb-nama" readonly class="w-full px-4 py-2 bg-slate-100 border rounded-xl text-xs font-bold text-slate-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="text-[11px] font-bold text-slate-600 block mb-1">No WhatsApp <span class="text-red-500">*</span></label>
+                            <input type="text" id="fb-wa" readonly class="w-full px-4 py-2 bg-slate-100 border rounded-xl text-xs font-bold text-slate-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="text-[11px] font-bold text-slate-600 block mb-1">Tanggal Booking <span class="text-red-500">*</span></label>
+                            <input type="date" id="fb-tanggal" class="w-full px-4 py-2 bg-slate-50 border rounded-xl text-xs focus:outline-none focus:border-mua-pink">
+                        </div>
+                        <div>
+                            <label class="text-[11px] font-bold text-slate-600 block mb-1">Jam Booking <span class="text-red-500">*</span></label>
+                            <input type="time" id="fb-jam" class="w-full px-4 py-2 bg-slate-50 border rounded-xl text-xs focus:outline-none focus:border-mua-pink">
+                        </div>
+                        <div>
+                            <label class="text-[11px] font-bold text-slate-600 block mb-1">Paket Makeup Terpilih <span class="text-red-500">*</span></label>
+                            <input type="text" id="fb-paket" readonly placeholder="Klik 'Pilih Paket' di kanan" class="w-full px-4 py-2 bg-pink-50 border border-pink-200 rounded-xl text-xs font-bold text-mua-pink focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="text-[11px] font-bold text-slate-600 block mb-1">Catatan / Request (Opsional)</label>
+                            <textarea id="fb-catatan" rows="3" placeholder="Contoh: Makeup natural glowing, soft pink..." class="w-full px-4 py-2 bg-slate-50 border rounded-xl text-xs focus:outline-none focus:border-mua-pink"></textarea>
+                        </div>
+                        <button onclick="submitOrderBooking()" class="w-full bg-mua-pink text-white py-3 rounded-xl text-xs font-bold hover:bg-mua-pink-dark transition shadow-lg shadow-pink-100 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i> Booking Sekarang
+                        </button>
+                    </div>
+
+                    <div class="md:col-span-7 space-y-4">
+                        <h4 class="text-xs font-black text-slate-400 uppercase">Pilih Paket Makeup</h4>
+                        <div id="container-katalog-paket" class="grid grid-cols-2 gap-4">
+                            <p class="text-xs text-slate-400 p-4 col-span-2 text-center">Sedang sinkronisasi paket makeup...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="page-cust-success" class="max-w-md mx-auto px-6 py-16 hidden">
+                <div class="bg-white rounded-3xl border shadow-xl p-6 text-center space-y-6">
+                    <div class="w-14 h-14 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center text-2xl mx-auto"><i class="fa-solid fa-circle-check"></i></div>
+                    <div class="space-y-1">
+                        <h3 class="text-lg font-black text-slate-800">Booking Berhasil! 🎉</h3>
+                        <p class="text-[11px] text-slate-400">Terima kasih, data pesanan Anda sudah kami terima ke database. Mohon tunggu konfirmasi admin kami.</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-2xl text-left text-xs space-y-2 border">
+                        <div class="flex justify-between"><span class="text-slate-400">ID Booking:</span><span class="font-mono font-bold text-slate-800" id="res-id">MUA-X</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Nama:</span><span class="font-bold text-slate-800" id="res-nama">-</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Paket:</span><span class="font-bold text-slate-800" id="res-paket">-</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Waktu Sesi:</span><span class="font-bold text-slate-800" id="res-waktu">-</span></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="bukaHalamanCekLangsung()" class="bg-mua-pink text-white py-2.5 rounded-xl text-xs font-bold">Cek Booking Saya</button>
+                        <button onclick="switchPage('cust-home')" class="bg-slate-100 text-slate-600 py-2.5 rounded-xl text-xs font-bold">Kembali ke Home</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="page-cust-cek" class="max-w-4xl mx-auto px-6 py-12 space-y-8 hidden">
+                <div class="bg-white p-6 rounded-2xl border shadow-sm max-w-md mx-auto text-center space-y-4">
+                    <h3 class="text-sm font-black text-slate-800">Cek Status Booking</h3>
+                    <p class="text-xs text-slate-400">Masukkan ID Booking atau No WhatsApp terdaftar Anda</p>
+                    <div class="space-y-3">
+                        <input type="text" id="input-search-id" placeholder="Contoh: MUA-20260608-001" class="w-full px-4 py-2.5 bg-slate-50 border rounded-xl text-xs text-center font-bold tracking-wide focus:outline-none focus:border-mua-pink">
+                        <button onclick="prosesCekStatus()" class="w-full bg-mua-pink text-white py-2.5 rounded-xl text-xs font-bold hover:bg-mua-pink-dark transition">Cek Status Sekarang</button>
+                    </div>
+                    <p id="err-search-cust" class="text-[10px] font-bold text-red-500 hidden"></p>
+                </div>
+
+                <div id="wrapper-hasil-tracking" class="grid md:grid-cols-2 gap-6 items-start hidden">
+                    <div class="bg-white p-6 rounded-2xl border shadow-sm space-y-3 text-xs">
+                        <h4 class="font-black text-slate-800 border-b pb-2 text-xs">Detail Booking</h4>
+                        <div class="flex justify-between"><span class="text-slate-400">ID Booking</span><span class="font-mono font-bold" id="track-id"></span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Nama Pelanggan</span><span class="font-bold" id="track-nama"></span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">No WhatsApp</span><span class="font-mono font-bold text-blue-600" id="track-wa"></span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Tanggal Booking</span><span class="font-bold" id="track-tgl"></span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Jam Sesi</span><span class="font-bold" id="track-jam"></span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Paket Layanan</span><span class="font-bold text-mua-pink" id="track-paket"></span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Catatan / Request</span><span class="text-slate-500" id="track-catatan"></span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Dibuat Pada</span><span class="text-slate-400" id="track-dibuat"></span></div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl border shadow-sm space-y-6">
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <h4 class="font-black text-slate-800 text-xs">Status Alur Booking</h4>
+                            <span id="badge-status-text" class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-amber-100 text-amber-700">Pending</span>
+                        </div>
+                        <div class="relative pl-6 space-y-6 border-l-2 border-slate-100" id="timeline-flow">
+                            <div class="relative" id="tl-pending">
+                                <div class="absolute -left-[31px] top-0.5 w-4 h-4 rounded-full bg-slate-200 border-4 border-white shadow flex items-center justify-center"></div>
+                                <h5 class="text-xs font-bold text-slate-400">Pending</h5>
+                                <p class="text-[10px] text-slate-400">Menunggu antrean konfirmasi persetujuan admin utama</p>
+                            </div>
+                            <div class="relative" id="tl-confirm">
+                                <div class="absolute -left-[31px] top-0.5 w-4 h-4 rounded-full bg-slate-200 border-4 border-white shadow flex items-center justify-center"></div>
+                                <h5 class="text-xs font-bold text-slate-400">Confirmed</h5>
+                                <p class="text-[10px] text-slate-400">Sesi disetujui! Slot waktu aman & terkunci untuk Anda</p>
+                            </div>
+                            <div class="relative" id="tl-final">
+                                <div class="absolute -left-[31px] top-0.5 w-4 h-4 rounded-full bg-slate-200 border-4 border-white shadow flex items-center justify-center"></div>
+                                <h5 class="text-xs font-bold text-slate-400">Selesai / Batal</h5>
+                                <p class="text-[10px] text-slate-400">Status akhir pemrosesan order layanan makeup</p>
+                            </div>
+                        </div>
+                        <a id="btn-wa-admin" href="#" target="_blank" class="w-full bg-emerald-500 text-white py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-md shadow-emerald-100 hover:bg-emerald-600 transition">
+                            <i class="fa-brands fa-whatsapp"></i> Hubungi Admin via WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+
+        <div id="workspace-admin" class="flex-1 hidden flex">
+            <aside class="w-60 bg-slate-900 text-slate-400 flex flex-col justify-between border-r border-slate-800">
+                <div>
+                    <div class="p-5 border-b border-slate-800 flex items-center gap-3">
+                        <div class="w-7 h-7 bg-mua-pink text-white rounded-lg flex items-center justify-center text-xs"><i class="fa-solid fa-crown"></i></div>
+                        <span class="text-white font-black text-xs tracking-wider">WORKSPACE ADMIN</span>
+                    </div>
+                    <nav class="p-3 space-y-1">
+                        <button onclick="switchAdminSubPage('adm-dash')" id="tab-adm-dash" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-slate-800"><i class="fa-solid fa-chart-line text-mua-pink"></i> Ringkasan Utama</button>
+                        <button onclick="switchAdminSubPage('adm-orders')" id="tab-adm-orders" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-slate-800 hover:text-white transition"><i class="fa-solid fa-receipt"></i> Kelola Booking</button>
+                    </nav>
+                </div>
+                <div class="p-4 border-t border-slate-800 space-y-3">
+                    <div class="text-xs px-2"><p class="font-bold text-white" id="adm-profile-name">Administrator</p><span class="text-[9px] text-amber-400 font-mono">ROLE: SYSTEM ADMIN</span></div>
+                    <button onclick="logout()" class="w-full bg-red-600/20 text-red-400 py-2 rounded-xl text-xs font-bold hover:bg-red-600 hover:text-white transition flex items-center justify-center gap-2"><i class="fa-solid fa-power-off"></i> Logout Sesi</button>
+                </div>
+            </aside>
+
+            <main class="flex-1 p-8 overflow-y-auto">
+                <section id="sub-adm-dash" class="space-y-6">
+                    <h2 class="text-lg font-black text-slate-800">Metrik Statistik Global</h2>
+                    <div class="grid grid-cols-4 gap-4 text-xs font-bold">
+                        <div class="bg-white p-5 rounded-2xl border shadow-sm"><p class="text-slate-400">TOTAL BOOKING</p><h3 class="text-2xl font-black mt-1" id="adm-s-total">0</h3></div>
+                        <div class="bg-white p-5 rounded-2xl border shadow-sm"><p class="text-amber-500">PENDING DATA</p><h3 class="text-2xl font-black mt-1 text-amber-500" id="adm-s-pending">0</h3></div>
+                        <div class="bg-white p-5 rounded-2xl border shadow-sm"><p class="text-emerald-500">CONFIRMED SLOT</p><h3 class="text-2xl font-black mt-1 text-emerald-500" id="adm-s-confirm">0</h3></div>
+                        <div class="bg-white p-5 rounded-2xl border shadow-sm"><p class="text-red-500">CANCELLED ORDER</p><h3 class="text-2xl font-black mt-1 text-red-500" id="adm-s-cancel">0</h3></div>
+                    </div>
+                </section>
+
+                <section id="sub-adm-orders" class="hidden space-y-4">
+                    <div class="flex justify-between items-center"><h2 class="text-lg font-black text-slate-800">Daftar Pengajuan Masuk</h2><input type="text" id="adm-search" onkeyup="filterTabelAdmin()" placeholder="Cari nama client..." class="px-4 py-1.5 border rounded-xl text-xs w-56"></div>
+                    <div class="bg-white border rounded-2xl overflow-hidden shadow-sm">
+                        <table class="w-full text-xs text-left" id="tabel-admin-main">
+                            <thead class="bg-slate-800 text-white font-bold"><th class="p-3">ID Booking</th><th class="p-3">Nama</th><th class="p-3">WhatsApp</th><th class="p-3">Paket</th><th class="p-3">Waktu Sesi</th><th class="p-3">Total Harga</th><th class="p-3 text-center">Tindakan</th></thead>
+                            <tbody id="body-tabel-admin" class="text-slate-600"></tbody>
+                        </table>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <div id="loading-layer" class="fixed inset-0 bg-slate-900/40 flex items-center justify-center z-[9999] hidden">
+        <div class="bg-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3">
+            <i class="fa-solid fa-circle-notch fa-spin text-mua-pink text-xl"></i>
+            <span class="text-xs font-bold text-slate-700">Sinkronisasi Basis Data MUA...</span>
+        </div>
+    </div>
+
+    <script>
+        let sessionUser = { nama: "", wa: "", role: "" };
+
+        function switchAuthTab(tab) {
+            document.getElementById('box-login').classList.toggle('hidden', tab === 'reg');
+            document.getElementById('box-reg').classList.toggle('hidden', tab === 'login');
+        }
+
+        function togglePass(id) {
+            let el = document.getElementById(id);
+            el.type = el.type === 'password' ? 'text' : 'password';
+        }
+
+        function setLoader(show) {
+            document.getElementById('loading-layer').classList.toggle('hidden', !show);
+        }
+
+        // AMBIL DATA KATALOG SPREADSHEET SECARA DINAMIS
+        function muatKatalogPaketDariSheets() {
+            google.script.run.withSuccessHandler(listPaket => {
+                let container = document.getElementById('container-katalog-paket');
+                if(!listPaket || listPaket.length === 0) {
+                    container.innerHTML = `<p class="text-xs text-red-500 p-4 col-span-2 text-center">Belum ada data paket di spreadsheet PAKET_MAKEUP.</p>`;
+                    return;
+                }
+                
+                let html = '';
+                listPaket.forEach(paket => {
+                    html += `
+                    <div class="bg-white border rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between group hover:border-pink-300 transition">
+                        <img src="${paket.gambar}" class="h-28 w-full object-cover" alt="${paket.nama}">
+                        <div class="p-4 space-y-2 flex-1">
+                            <div class="flex justify-between items-start">
+                                <h5 class="font-bold text-xs text-slate-800">${paket.nama}</h5>
+                            </div>
+                            <p class="text-mua-pink font-black text-xs">${paket.hargaFormatted}</p>
+                            <p class="text-[10px] text-slate-400 leading-relaxed">${paket.detail}</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 border-t">
+                            <button onclick="pilihPaketLayanan('${paket.nama}')" class="w-full bg-white border border-slate-200 text-slate-700 py-1.5 rounded-lg text-[11px] font-bold hover:bg-mua-pink hover:text-white hover:border-mua-pink transition">Pilih Paket</button>
+                        </div>
+                    </div>`;
+                });
+                container.innerHTML = html;
+            }).ambilSemuaPaketMUA();
+        }
+
+        function prosesRegister() {
+            let n = document.getElementById('reg-nama').value.trim();
+            let w = document.getElementById('reg-wa').value.trim();
+            let p = document.getElementById('reg-pass').value.trim();
+            let msg = document.getElementById('msg-reg');
+
+            if(!n || !w || !p) {
+                msg.innerText = "Semua bidang wajib diisi!";
+                msg.className = "text-[10px] font-bold text-center text-red-500";
+                msg.classList.remove('hidden');
+                return;
+            }
+            setLoader(true);
+            google.script.run.withSuccessHandler(res => {
+                setLoader(false);
+                msg.innerText = res.message;
+                msg.classList.remove('hidden');
+                if(res.status === 'success') {
+                    msg.className = "text-[10px] font-bold text-center text-green-500";
+                    setTimeout(() => { switchAuthTab('login'); }, 1500);
+                } else {
+                    msg.className = "text-[10px] font-bold text-center text-red-500";
+                }
+            }).daftarUserBaru(n, w, p);
+        }
+
+        function prosesLogin() {
+            let wa = document.getElementById('login-wa').value.trim();
+            let pass = document.getElementById('login-pass').value.trim();
+            let err = document.getElementById('err-login');
+
+            if(!wa || !pass) {
+                err.innerText = "WhatsApp & Password tidak boleh kosong!";
+                err.classList.remove('hidden');
+                return;
+            }
+            err.classList.add('hidden');
+            setLoader(true);
+
+            google.script.run.withSuccessHandler(res => {
+                setLoader(false);
+                if(res.status === 'success') {
+                    sessionUser.nama = res.nama;
+                    sessionUser.wa = res.wa;
+                    sessionUser.role = res.role;
+
+                    document.getElementById('screen-auth').classList.add('hidden');
+                    document.getElementById('panel-aplikasi').classList.remove('hidden');
+
+                    if(res.role === 'ADMIN') {
+                        document.getElementById('workspace-admin').classList.remove('hidden');
+                        document.getElementById('workspace-customer').classList.add('hidden');
+                        document.getElementById('nav-customer').classList.add('hidden');
+                        document.getElementById('adm-profile-name').innerText = res.nama;
+                        loadAdminDashboardData();
+                    } else {
+                        document.getElementById('workspace-customer').classList.remove('hidden');
+                        document.getElementById('nav-customer').classList.remove('hidden');
+                        document.getElementById('workspace-admin').classList.add('hidden');
+                        document.getElementById('cust-profile-name').innerText = res.nama;
+                        
+                        document.getElementById('fb-nama').value = res.nama;
+                        document.getElementById('fb-wa').value = res.wa;
+                        
+                        // Muat katalog secara dinamis begitu customer berhasil login
+                        muatKatalogPaketDariSheets();
+                        switchPage('cust-home');
+                    }
+                } else {
+                    err.innerText = res.message;
+                    err.classList.remove('hidden');
+                }
+            }).periksaLoginUser(wa, pass);
+        }
+
+        function switchPage(pageId) {
+            document.querySelectorAll('#workspace-customer > section').forEach(s => s.classList.add('hidden'));
+            document.getElementById('page-' + pageId).classList.remove('hidden');
+            
+            document.querySelectorAll('#nav-customer nav button').forEach(b => b.className = 'text-slate-500 hover:text-mua-pink');
+            if(pageId === 'cust-home') document.querySelectorAll('#nav-customer nav button')[0].className = 'text-mua-pink';
+            if(pageId === 'cust-booking') document.querySelectorAll('#nav-customer nav button')[1].className = 'text-mua-pink';
+            if(pageId === 'cust-cek') document.querySelectorAll('#nav-customer nav button')[2].className = 'text-mua-pink';
+        }
+
+        function pilihPaketLayanan(namaPaket) {
+            document.getElementById('fb-paket').value = namaPaket;
+            alert("Paket '" + namaPaket + "' berhasil dipilih! Selesaikan pengisian form di sebelah kiri.");
+        }
+
+        function submitOrderBooking() {
+            let tgl = document.getElementById('fb-tanggal').value;
+            let jam = document.getElementById('fb-jam').value;
+            let pkt = document.getElementById('fb-paket').value;
+            let cat = document.getElementById('fb-catatan').value;
+
+            if(!tgl || !jam || !pkt) {
+                alert("Mohon lengkapi Tanggal, Jam, dan pilih Paket Makeup terlebih dahulu!");
+                return;
+            }
+            setLoader(true);
+            google.script.run.withSuccessHandler(res => {
+                setLoader(false);
+                if(res.status === 'success') {
+                    document.getElementById('res-id').innerText = res.id;
+                    document.getElementById('res-nama').innerText = res.nama;
+                    document.getElementById('res-paket').innerText = res.paket;
+                    document.getElementById('res-waktu').innerText = res.tanggal + " - [ " + res.jam + " WIB ]";
+                    
+                    switchPage('cust-success');
+                    document.getElementById('fb-tanggal').value = "";
+                    document.getElementById('fb-jam').value = "";
+                    document.getElementById('fb-paket').value = "";
+                    document.getElementById('fb-catatan').value = "";
+                } else {
+                    alert("Gagal memproses booking: " + res.message);
+                }
+            }).simpanBookingCustomer(sessionUser.nama, sessionUser.wa, pkt, tgl, jam, cat);
+        }
+
+        function bukaHalamanCekLangsung() {
+            let idBaru = document.getElementById('res-id').innerText;
+            document.getElementById('input-search-id').value = idBaru;
+            switchPage('cust-cek');
+            prosesCekStatus();
+        }
+
+        function prosesCekStatus() {
+            let q = document.getElementById('input-search-id').value.trim();
+            let err = document.getElementById('err-search-cust');
+            let wrapper = document.getElementById('wrapper-hasil-tracking');
+
+            if(!q) return;
+            err.classList.add('hidden');
+            setLoader(true);
+
+            google.script.run.withSuccessHandler(res => {
+                setLoader(false);
+                if(res.status === 'success' && res.found) {
+                    wrapper.classList.remove('hidden');
+                    
+                    document.getElementById('track-id').innerText = res.id;
+                    document.getElementById('track-nama').innerText = res.nama;
+                    document.getElementById('track-wa').innerText = res.wa;
+                    document.getElementById('track-tgl').innerText = res.tanggal;
+                    document.getElementById('track-jam').innerText = res.jam + " WIB";
+                    document.getElementById('track-paket').innerText = res.paket;
+                    document.getElementById('track-catatan').innerText = res.catatan;
+                    document.getElementById('track-dibuat').innerText = res.dibuat;
+
+                    let badge = document.getElementById('badge-status-text');
+                    badge.innerText = res.statusBooking;
+
+                    document.querySelectorAll('#timeline-flow > div > div').forEach(d => { d.className = "absolute -left-[31px] top-0.5 w-4 h-4 rounded-full bg-slate-200 border-4 border-white shadow"; });
+                    document.querySelectorAll('#timeline-flow > div > h5').forEach(h => h.className = "text-xs font-bold text-slate-400");
+
+                    let st = res.statusBooking.toLowerCase();
+                    let nodePending = document.querySelector('#tl-pending > div');
+                    let titlePending = document.querySelector('#tl-pending > h5');
+                    let nodeConfirm = document.querySelector('#tl-confirm > div');
+                    let titleConfirm = document.querySelector('#tl-confirm > h5');
+                    let nodeFinal = document.querySelector('#tl-final > div');
+                    let titleFinal = document.querySelector('#tl-final > h5');
+                    let titleFinalDesc = document.querySelector('#tl-final > p');
+
+                    if(st === 'pending') {
+                        badge.className = "px-2 py-0.5 rounded text-[10px] font-extrabold bg-amber-100 text-amber-700";
+                        nodePending.classList.add('bg-amber-500');
+                        titlePending.className = "text-xs font-bold text-amber-600";
+                    } else if(st === 'confirm' || st === 'confirmed') {
+                        badge.className = "px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-100 text-emerald-700";
+                        nodePending.classList.add('bg-emerald-500');
+                        nodeConfirm.classList.add('bg-emerald-500');
+                        titleConfirm.className = "text-xs font-bold text-emerald-600";
+                    } else if(st === 'done') {
+                        badge.className = "px-2 py-0.5 rounded text-[10px] font-extrabold bg-blue-100 text-blue-700";
+                        nodePending.classList.add('bg-blue-500');
+                        nodeConfirm.classList.add('bg-blue-500');
+                        nodeFinal.classList.add('bg-blue-500');
+                        titleFinal.className = "text-xs font-bold text-blue-600";
+                        titleFinal.innerText = "Makeup Selesai";
+                        titleFinalDesc.innerText = "Layanan selesai dikerjakan dengan baik.";
+                    } else if(st === 'cancel' || st === 'cancelled') {
+                        badge.className = "px-2 py-0.5 rounded text-[10px] font-extrabold bg-red-100 text-red-700";
+                        nodePending.classList.add('bg-red-400');
+                        nodeFinal.classList.add('bg-red-500');
+                        titleFinal.className = "text-xs font-bold text-red-600";
+                        titleFinal.innerText = "Booking Dibatalkan";
+                        titleFinalDesc.innerText = "Sesi booking ditolak atau dibatalkan oleh pihak manajemen.";
+                    }
+
+                    document.getElementById('btn-wa-admin').href = "https://wa.me/628123456789?text=Halo%20Admin%20IMOMAKEUP,%20saya%20ingin%20bertanya%20terkait%20ID%20" + res.id;
+                } else {
+                    wrapper.classList.add('hidden');
+                    err.innerText = res.message || "Data tidak ditemukan!";
+                    err.classList.remove('hidden');
+                }
+            }).periksaStatusBooking(q);
+        }
+
+        // ====================================================================
+        // BACKEND ADMIN LOGIC CONTROLLER
+        // ====================================================================
+        function switchAdminSubPage(subId) {
+            document.getElementById('sub-adm-dash').classList.toggle('hidden', subId !== 'adm-dash');
+            document.getElementById('sub-adm-orders').classList.toggle('hidden', subId !== 'adm-orders');
+            
+            document.getElementById('tab-adm-dash').className = 'w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold ' + (subId==='adm-dash'?'text-white bg-slate-800':'text-slate-400 hover:bg-slate-800 hover:text-white');
+            document.getElementById('tab-adm-orders').className = 'w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold ' + (subId==='adm-orders'?'text-white bg-slate-800':'text-slate-400 hover:bg-slate-800 hover:text-white');
+            
+            if(subId === 'adm-dash') loadAdminDashboardData();
+            if(subId === 'adm-orders') loadAdminOrdersTable();
+        }
+
+        function loadAdminDashboardData() {
+            google.script.run.withSuccessHandler(s => {
+                document.getElementById('adm-s-total').innerText = s.total;
+                document.getElementById('adm-s-pending').innerText = s.pending;
+                document.getElementById('adm-s-confirm').innerText = s.confirmed;
+                document.getElementById('adm-s-cancel').innerText = s.cancelled;
+            }).getDashboardStats();
+        }
+
+        function loadAdminOrdersTable() {
+            google.script.run.withSuccessHandler(list => {
+                let html = '';
+                list.forEach(x => {
+                    let aksi = x.status.toLowerCase() === 'confirm' ? '<span class="text-emerald-500 font-extrabold"><i class="fa-solid fa-check-double"></i> Confirmed</span>' : `<button onclick="approveBookingByAdmin('${x.id}')" class="bg-emerald-500 text-white px-3 py-1 rounded-lg text-[10px] font-bold hover:bg-emerald-600 transition">Setujui</button>`;
+                    html += `<tr class="border-b hover:bg-slate-50"><td class="p-3 font-mono text-slate-800 font-bold">${x.id}</td><td class="p-3 font-bold">${x.nama}</td><td class="p-3 font-mono">${x.wa}</td><td class="p-3">${x.paket}</td><td class="p-3">${x.tanggal}<span class="block text-[9px] text-slate-400">${x.jam}</span></td><td class="p-3 font-bold text-mua-pink">${x.harga}</td><td class="p-3 text-center">${aksi}</td></tr>`;
+                });
+                document.getElementById('body-tabel-admin').innerHTML = html || '<tr><td colspan="7" class="text-center p-4 text-slate-400">Belum ada data antrean masuk.</td></tr>';
+            }).getAllBookingsAdmin();
+        }
+
+        // AKSI APPROVE OLEH ADMIN (OTOMATIS MEMBUKA LINK KIRIM WA KE CUSTOMER)
+        function approveBookingByAdmin(id) {
+            if(!confirm("Setujui antrean booking " + id + "?")) return;
+            setLoader(true);
+            google.script.run.withSuccessHandler(r => {
+                setLoader(false);
+                if(r.status === 'success') {
+                    loadAdminOrdersTable();
+                    
+                    // Bersihkan nomor Whatsapp dari karakter non-angka
+                    let cleanWA = r.wa.replace(/\D/g, '');
+                    
+                    // Buat isi draf text pesan konfirmasi WhatsApp otomatis
+                    let textPesan = `Halo kak *${r.nama}*,\n\nKabar baik! Pendaftaran booking makeup Anda dengan *ID ${r.id}* telah *DISETUJUI* oleh Admin IMOMAKEUP.\n\n*Detail Jadwal Sesi:*\n- Paket: ${r.paket}\n- Tanggal: ${r.tanggal}\n- Jam Sesi: ${r.jam} WIB\n\nMohon hadir tepat waktu sesuai jadwal ya kak. Sampai jumpa di lokasi! ❤️`;
+                    let waUrl = "https://wa.me/" + cleanWA + "?text=" + encodeURIComponent(textPesan);
+                    
+                    // Otomatis arahkan browser admin untuk membuka dan kirim chat WA ke customer
+                    window.open(waUrl, '_blank');
+                } else {
+                    alert("Gagal memproses persetujuan: " + r.message);
+                }
+            }).setujuiBookingDariAdmin(id);
+        }
+
+        function filterTabelAdmin() {
+            let q = document.getElementById('adm-search').value.toLowerCase();
+            let tr = document.querySelectorAll('#body-tabel-admin tr');
+            tr.forEach(r => { r.style.display = r.innerText.toLowerCase().includes(q) ? '' : 'none'; });
+        }
+
+        function logout() {
+            setLoader(true);
+            setTimeout(() => {
+                window.top.location.href = "<?= ScriptApp.getService().getUrl(); ?>";
+            }, 400);
+        }
+    </script>
+</body>
+</html>
