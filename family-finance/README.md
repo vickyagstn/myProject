@@ -61,7 +61,7 @@ https://family-finance-cyan-beta.vercel.app
 
 | Login | Dashboard Admin |
 |---|---|
-| ![Login](images/login.png) | ![Dashboard Admin](images/dashboard-admin.png) |
+| ![Login](family-finance/image/login.png) | ![Dashboard Admin](images/dashboard-admin.png) |
 
 | Dashboard Anggota |
 |---|
