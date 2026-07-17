@@ -61,11 +61,11 @@ https://family-finance-cyan-beta.vercel.app
 
 | Login | Dashboard Admin |
 |---|---|
-| ![Login](public/images/login.png) | ![Dashboard Admin](public/images/dashboard-admin.png) |
+| ![Login](images/login.png) | ![Dashboard Admin](images/dashboard-admin.png) |
 
 | Dashboard Anggota |
 |---|
-| ![Dashboard Anggota](public/images/dashboard-anggota.png) |
+| ![Dashboard Anggota](images/dashboard-anggota.png) |
 
 ---
 
