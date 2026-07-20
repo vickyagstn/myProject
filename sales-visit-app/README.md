@@ -5,7 +5,7 @@
 
 **Aplikasi berbasis web untuk membantu pengelolaan aktivitas kunjungan sales, data sales, inventaris, pengeluaran, laporan, dan analisis AI dalam satu dashboard yang modern, cepat, dan mudah digunakan.**
 
-[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Sales_Visit_App-blue?style=for-the-badge)](https://sales-visit-app-woad.vercel.app/login)
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Sales_Visit_App-blue?style=for-the-badge)](https://sales-visit-app-woad.vercel.app)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)](https://react.dev)
 [![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=for-the-badge&logo=vite)](https://vitejs.dev)
 [![Firebase](https://img.shields.io/badge/Firebase-Firestore-FFCA28?style=for-the-badge&logo=firebase)](https://firebase.google.com)
@@ -13,7 +13,7 @@
 
 🌐 **Live Demo**
 
-https://sales-visit-app-woad.vercel.app/login
+https://sales-visit-app-woad.vercel.app
 
 📂 **GitHub Repository**
 
