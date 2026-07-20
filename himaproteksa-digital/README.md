@@ -1,20 +1,20 @@
 # HIMAPROTEKSA DIGITAL
 
 <p align="center">
-  <b>Sistem Informasi Himpunan Mahasiswa Teknologi Rekayasa Perangkat Lunak</b>
+  <b>Sistem Informasi Manajemen Organisasi Mahasiswa Berbasis Web</b>
 </p>
 
 <p align="center">
-Website untuk membantu pengelolaan organisasi HIMAPROTEKSA secara digital, mulai dari data anggota, kegiatan, absensi, notulen rapat, pengumuman, hingga dokumentasi organisasi.
+Website untuk membantu pengelolaan organisasi HIMAPROTEKSA secara digital, mulai dari data anggota, kegiatan, absensi, notulen rapat, pengumuman, dokumentasi, hingga AI Assistant.
 </p>
 
 ---
 
-## 📖 Tentang Aplikasi
+# 📖 Tentang Aplikasi
 
-HIMAPROTEKSA DIGITAL merupakan aplikasi berbasis web yang dikembangkan untuk membantu pengurus Himpunan Mahasiswa Teknologi Rekayasa Perangkat Lunak dalam mengelola administrasi organisasi secara lebih efektif dan efisien.
+**HIMAPROTEKSA DIGITAL** merupakan sistem informasi manajemen organisasi mahasiswa berbasis web yang dikembangkan untuk membantu pengurus dan anggota dalam mengelola aktivitas organisasi secara lebih efektif, efisien, dan terintegrasi.
 
-Dengan adanya aplikasi ini, proses pencatatan anggota, pengelolaan kegiatan, absensi, dokumentasi, serta penyampaian informasi kepada anggota dapat dilakukan dalam satu sistem yang terintegrasi.
+Aplikasi ini menyediakan berbagai fitur untuk mendukung digitalisasi organisasi, mulai dari pengelolaan anggota, kegiatan, absensi, notulen rapat, pengumuman, dokumentasi, hingga AI Assistant yang membantu pembuatan notulen dan pengumuman secara otomatis.
 
 ---
 
@@ -25,12 +25,13 @@ Dengan adanya aplikasi ini, proses pencatatan anggota, pengelolaan kegiatan, abs
 - Login Admin
 - Dashboard Admin
 - Kelola Data Anggota
-- Kelola Kegiatan
+- Kelola Data Kegiatan
 - Kelola Absensi
 - Kelola Notulen Rapat
 - Kelola Pengumuman
 - Kelola Dokumentasi
 - Monitoring Keaktifan Anggota
+- AI Assistant
 - Logout
 
 ---
@@ -49,14 +50,14 @@ Dengan adanya aplikasi ini, proses pencatatan anggota, pengelolaan kegiatan, abs
 
 ---
 
-# 🤖 Fitur AI
+# 🤖 AI Assistant
 
-Aplikasi menggunakan **OpenRouter API** sebagai AI Assistant untuk membantu:
+Aplikasi mengintegrasikan **OpenRouter API** untuk membantu:
 
-- Membuat notulen rapat secara otomatis.
-- Membuat ringkasan hasil rapat.
-- Membantu menyusun pengumuman.
-- Membantu penulisan administrasi organisasi.
+- Membuat notulen rapat
+- Membuat ringkasan hasil rapat
+- Membantu menyusun pengumuman
+- Membantu administrasi organisasi
 
 ---
 
@@ -67,7 +68,7 @@ Aplikasi menggunakan **OpenRouter API** sebagai AI Assistant untuk membantu:
 | React JS (Vite) | Frontend |
 | Tailwind CSS | User Interface |
 | React Router DOM | Routing |
-| Firebase Authentication | Login |
+| Firebase Authentication | Authentication |
 | Firebase Firestore | Database |
 | Firebase Storage | Penyimpanan File |
 | OpenRouter API | AI Assistant |
@@ -88,12 +89,15 @@ himaproteksa-digital
 │       └── admin-user-page.png
 │
 ├── src
+│   ├── assets
 │   ├── components
-│   ├── pages
 │   ├── hooks
+│   ├── layouts
 │   ├── lib
+│   ├── pages
+│   ├── routes
 │   ├── services
-│   └── assets
+│   └── utils
 │
 ├── package.json
 ├── vite.config.js
@@ -106,8 +110,8 @@ himaproteksa-digital
 
 ## Dashboard
 
-| Admin | User |
-|-------|------|
+| Dashboard Admin | Dashboard User |
+|-----------------|----------------|
 | ![](public/images/admin-dashboard.png) | ![](public/images/user-dashboard.png) |
 
 ### Halaman Admin & User
@@ -127,7 +131,7 @@ git clone https://github.com/vickyagstn/myProject.git
 Masuk ke folder project
 
 ```bash
-cd himaproteksa-digital
+cd myProject/himaproteksa-digital
 ```
 
 Install dependency
@@ -175,13 +179,80 @@ VITE_OPENROUTER_API_KEY=YOUR_OPENROUTER_API_KEY
 
 ---
 
+# 🔑 Cara Mengakses Aplikasi
+
+Setelah aplikasi berhasil dijalankan menggunakan:
+
+```bash
+npm run dev
+```
+
+Buka browser dan akses:
+
+```text
+http://localhost:5173
+```
+
+Apabila aplikasi telah di-deploy menggunakan **Vercel**, gunakan URL deployment yang tersedia.
+
+---
+
+# 👤 Akun Demo
+
+## 👨‍💼 Admin
+
+| Keterangan | Data |
+|------------|------|
+| Email | `admin@himaproteksa.com` |
+| Password | `hima1234` |
+
+Hak akses Admin:
+
+- Mengelola Data Anggota
+- Mengelola Kegiatan
+- Mengelola Absensi
+- Mengelola Notulen
+- Mengelola Pengumuman
+- Mengelola Dokumentasi
+- Monitoring Keaktifan Anggota
+- Menggunakan AI Assistant
+
+---
+
+## 👨‍🎓 Anggota
+
+| Keterangan | Data |
+|------------|------|
+| Email | `vicky@himaproteksa.com` |
+| Password | `B22054` |
+
+Hak akses Anggota:
+
+- Melihat Profil
+- Melihat Kegiatan
+- Melakukan Absensi
+- Melihat Notulen
+- Melihat Pengumuman
+- Melihat Dokumentasi
+
+---
+
+> **Catatan**
+> untuk mengakses nya harus 2x untuk website 
+> Akun di atas merupakan akun demo yang disediakan untuk mencoba seluruh fitur aplikasi sesuai dengan hak akses masing-masing pengguna.
+
+---
+
 # 🎯 Tujuan Pengembangan
 
-- Mempermudah administrasi organisasi.
-- Memudahkan pengelolaan data anggota.
-- Menyediakan informasi organisasi secara terpusat.
-- Mendukung digitalisasi kegiatan HIMAPROTEKSA.
-- Membantu pengurus dalam penyusunan notulen menggunakan AI.
+- Mendukung digitalisasi organisasi mahasiswa.
+- Mempermudah pengelolaan data anggota.
+- Mempermudah pengelolaan kegiatan organisasi.
+- Menyediakan sistem absensi digital.
+- Membantu penyusunan notulen rapat menggunakan AI.
+- Mempermudah penyampaian pengumuman.
+- Menyimpan dokumentasi organisasi secara terpusat.
+- Meningkatkan efisiensi pengelolaan organisasi mahasiswa.
 
 ---
 
@@ -206,6 +277,6 @@ Politeknik Indonusa Surakarta
 
 # 📄 Lisensi
 
-Project ini dikembangkan untuk keperluan akademik dan pengembangan organisasi **HIMAPROTEKSA**.
+Project ini dikembangkan untuk keperluan akademik dan sebagai implementasi **Sistem Informasi Manajemen Organisasi Mahasiswa Berbasis Web**.
 
-Seluruh kode dapat dikembangkan kembali sesuai kebutuhan dengan tetap mencantumkan kredit kepada pengembang.
+Seluruh kode dapat digunakan sebagai referensi pembelajaran dan pengembangan lebih lanjut dengan tetap mencantumkan kredit kepada pengembang.
