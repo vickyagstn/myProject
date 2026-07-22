@@ -13,12 +13,14 @@
         .border-mua-pink { border-color: #E61E53; }
         .focus\:border-mua-pink:focus { border-color: #E61E53; }
         .focus\:ring-mua-pink:focus { --tw-ring-color: #E61E53; }
+
+        /* ===== RESPONSIVE HELPERS ===== */
     </style>
 </head>
 <body class="bg-slate-50 text-slate-700 font-sans min-h-screen">
 
     <div id="screen-auth" class="fixed inset-0 bg-pink-50/60 flex items-center justify-center p-4 z-[999]">
-        <div id="box-login" class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-xl border border-pink-100 text-center space-y-6">
+        <div id="box-login" class="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-xl border border-pink-100 text-center space-y-6">
             <div class="flex flex-col items-center gap-1">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-heart text-mua-pink text-2xl animate-pulse"></i>
@@ -63,7 +65,7 @@
             <p class="text-[11px] text-slate-400">Belum punya akun? <button onclick="switchAuthTab('reg')" class="text-mua-pink font-bold">Daftar sekarang</button></p>
         </div>
 
-        <div id="box-reg" class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-xl border border-pink-100 text-center space-y-4 hidden">
+        <div id="box-reg" class="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-xl border border-pink-100 text-center space-y-4 hidden">
             <div class="space-y-1">
                 <h2 class="text-lg font-bold text-slate-800">Daftar Akun Baru ✨</h2>
                 <p class="text-xs text-slate-400">Buat akun untuk memesan & memantau status booking</p>
@@ -93,7 +95,7 @@
 
     <div id="panel-aplikasi" class="hidden min-h-screen flex flex-col">
         
-        <header id="nav-customer" class="bg-white border-b sticky top-0 z-50 px-6 py-4 flex justify-between items-center hidden">
+        <header id="nav-customer" class="bg-white border-b sticky top-0 z-50 px-4 sm:px-6 py-4 flex justify-between items-center hidden">
             <div class="flex items-center gap-2">
                 <div class="w-8 h-8 bg-pink-100 rounded-xl flex items-center justify-center text-mua-pink font-black text-xs">MUA</div>
                 <div>
@@ -101,38 +103,52 @@
                     <span class="text-[9px] text-slate-400 font-medium">Make Up Artist</span>
                 </div>
             </div>
-            <nav class="flex items-center gap-6 text-xs font-bold">
+
+            <!-- Nav desktop -->
+            <nav class="hidden sm:flex items-center gap-6 text-xs font-bold">
                 <button onclick="switchPage('cust-home')" class="text-mua-pink">Home</button>
                 <button onclick="switchPage('cust-booking')" class="text-slate-500 hover:text-mua-pink">Booking</button>
                 <button onclick="switchPage('cust-cek')" class="text-slate-500 hover:text-mua-pink">Cek Booking</button>
             </nav>
-            <div class="flex items-center gap-3">
-                <div class="text-right">
+
+            <div class="flex items-center gap-2 sm:gap-3">
+                <div class="text-right hidden sm:block">
                     <p class="text-[11px] font-black text-slate-800" id="cust-profile-name">-</p>
                     <p class="text-[9px] text-slate-400">Selamat datang kembali!</p>
                 </div>
                 <button onclick="logout()" class="w-7 h-7 bg-slate-100 rounded-full text-slate-500 text-xs hover:bg-red-50 hover:text-red-500 transition"><i class="fa-solid fa-right-from-bracket"></i></button>
+                <!-- Tombol hamburger, hanya tampil di mobile -->
+                <button onclick="toggleCustomerNav()" class="sm:hidden w-7 h-7 flex items-center justify-center text-slate-600 text-sm">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
             </div>
         </header>
 
+        <!-- Dropdown nav mobile -->
+        <div id="mobile-customer-nav" class="hidden sm:hidden bg-white border-b sticky top-[65px] z-40 px-4 py-3 flex flex-col gap-1 text-xs font-bold">
+            <button onclick="switchPage('cust-home'); toggleCustomerNav();" class="text-left px-3 py-2 rounded-lg hover:bg-pink-50 text-mua-pink">Home</button>
+            <button onclick="switchPage('cust-booking'); toggleCustomerNav();" class="text-left px-3 py-2 rounded-lg hover:bg-pink-50 text-slate-500">Booking</button>
+            <button onclick="switchPage('cust-cek'); toggleCustomerNav();" class="text-left px-3 py-2 rounded-lg hover:bg-pink-50 text-slate-500">Cek Booking</button>
+        </div>
+
         <div id="workspace-customer" class="flex-1 hidden">
             
-            <section id="page-cust-home" class="max-w-5xl mx-auto px-6 py-12 space-y-16 hidden">
-                <div class="grid md:grid-cols-2 gap-8 items-center bg-gradient-to-br from-pink-50/40 via-white to-white p-8 rounded-3xl border border-pink-100/50">
+            <section id="page-cust-home" class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-10 sm:space-y-16 hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-gradient-to-br from-pink-50/40 via-white to-white p-6 sm:p-8 rounded-3xl border border-pink-100/50">
                     <div class="space-y-6">
                         <span class="text-[10px] font-extrabold uppercase tracking-widest text-mua-pink bg-pink-50 px-3 py-1 rounded-full">Make Your Special Day</span>
-                        <h2 class="text-4xl font-black text-slate-900 leading-tight">More Beautiful<br>With Us ✨</h2>
+                        <h2 class="text-3xl sm:text-4xl font-black text-slate-900 leading-tight">More Beautiful<br>With Us ✨</h2>
                         <p class="text-xs text-slate-400 leading-relaxed">Layanan makeup profesional untuk berbagai momen spesial Anda. Kami menggunakan produk kosmetik premium original untuk memberikan hasil akhir yang anggun, tahan lama, dan memukau.</p>
-                        <div class="flex gap-3">
-                            <button onclick="switchPage('cust-booking')" class="bg-mua-pink text-white px-5 py-3 rounded-xl text-xs font-bold shadow-lg shadow-pink-100 flex items-center gap-2 hover:bg-mua-pink-dark transition"><i class="fa-solid fa-calendar-days"></i> Booking Sekarang</button>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <button onclick="switchPage('cust-booking')" class="bg-mua-pink text-white px-5 py-3 rounded-xl text-xs font-bold shadow-lg shadow-pink-100 flex items-center justify-center gap-2 hover:bg-mua-pink-dark transition"><i class="fa-solid fa-calendar-days"></i> Booking Sekarang</button>
                             <button onclick="switchPage('cust-cek')" class="bg-white border border-slate-200 text-slate-600 px-5 py-3 rounded-xl text-xs font-bold hover:bg-slate-50 transition">Lihat Status Booking</button>
                         </div>
                     </div>
                     <div class="flex justify-center">
-                        <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=500&q=80" alt="MUA Model" class="rounded-3xl shadow-2xl max-h-72 object-cover border-4 border-white">
+                        <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=500&q=80" alt="MUA Model" class="rounded-3xl shadow-2xl max-h-72 w-full object-cover border-4 border-white">
                     </div>
                 </div>
-                <div class="grid grid-cols-4 gap-4 text-center">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                     <div class="bg-white p-4 rounded-2xl border shadow-sm space-y-2"><i class="fa-solid fa-user-tie text-mua-pink text-lg"></i><h4 class="text-xs font-bold text-slate-800">Makeup Profesional</h4><p class="text-[10px] text-slate-400">MUA berpengalaman & bersertifikat</p></div>
                     <div class="bg-white p-4 rounded-2xl border shadow-sm space-y-2"><i class="fa-solid fa-wand-magic text-mua-pink text-lg"></i><h4 class="text-xs font-bold text-slate-800">Produk Berkualitas</h4><p class="text-[10px] text-slate-400">Menggunakan produk premium terpercaya</p></div>
                     <div class="bg-white p-4 rounded-2xl border shadow-sm space-y-2"><i class="fa-solid fa-face-smile text-mua-pink text-lg"></i><h4 class="text-xs font-bold text-slate-800">Layanan Terbaik</h4><p class="text-[10px] text-slate-400">Pelayanan ramah dan hasil memuaskan</p></div>
@@ -140,11 +156,11 @@
                 </div>
             </section>
 
-            <section id="page-cust-booking" class="max-w-5xl mx-auto px-6 py-10 space-y-6 hidden">
+            <section id="page-cust-booking" class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-6 hidden">
                 <h3 class="text-lg font-black text-slate-800">Halaman Booking Sesi</h3>
-                <div class="grid md:grid-cols-12 gap-6 items-start">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
                     
-                    <div class="bg-white p-6 rounded-2xl border shadow-sm md:col-span-5 space-y-4">
+                    <div class="bg-white p-5 sm:p-6 rounded-2xl border shadow-sm md:col-span-5 space-y-4">
                         <h4 class="text-xs font-black text-slate-400 uppercase border-b pb-2">Form Booking</h4>
                         <div>
                             <label class="text-[11px] font-bold text-slate-600 block mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
@@ -177,14 +193,14 @@
 
                     <div class="md:col-span-7 space-y-4">
                         <h4 class="text-xs font-black text-slate-400 uppercase">Pilih Paket Makeup</h4>
-                        <div id="container-katalog-paket" class="grid grid-cols-2 gap-4">
-                            <p class="text-xs text-slate-400 p-4 col-span-2 text-center">Sedang sinkronisasi paket makeup...</p>
+                        <div id="container-katalog-paket" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <p class="text-xs text-slate-400 p-4 col-span-1 sm:col-span-2 text-center">Sedang sinkronisasi paket makeup...</p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section id="page-cust-success" class="max-w-md mx-auto px-6 py-16 hidden">
+            <section id="page-cust-success" class="max-w-md mx-auto px-4 sm:px-6 py-12 sm:py-16 hidden">
                 <div class="bg-white rounded-3xl border shadow-xl p-6 text-center space-y-6">
                     <div class="w-14 h-14 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center text-2xl mx-auto"><i class="fa-solid fa-circle-check"></i></div>
                     <div class="space-y-1">
@@ -204,7 +220,7 @@
                 </div>
             </section>
 
-            <section id="page-cust-cek" class="max-w-4xl mx-auto px-6 py-12 space-y-8 hidden">
+            <section id="page-cust-cek" class="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-8 hidden">
                 <div class="bg-white p-6 rounded-2xl border shadow-sm max-w-md mx-auto text-center space-y-4">
                     <h3 class="text-sm font-black text-slate-800">Cek Status Booking</h3>
                     <p class="text-xs text-slate-400">Masukkan ID Booking atau No WhatsApp terdaftar Anda</p>
@@ -215,7 +231,7 @@
                     <p id="err-search-cust" class="text-[10px] font-bold text-red-500 hidden"></p>
                 </div>
 
-                <div id="wrapper-hasil-tracking" class="grid md:grid-cols-2 gap-6 items-start hidden">
+                <div id="wrapper-hasil-tracking" class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start hidden">
                     <div class="bg-white p-6 rounded-2xl border shadow-sm space-y-3 text-xs">
                         <h4 class="font-black text-slate-800 border-b pb-2 text-xs">Detail Booking</h4>
                         <div class="flex justify-between"><span class="text-slate-400">ID Booking</span><span class="font-mono font-bold" id="track-id"></span></div>
@@ -259,39 +275,40 @@
         </div>
 
 
-        <div id="workspace-admin" class="flex-1 hidden flex">
-            <aside class="w-60 bg-slate-900 text-slate-400 flex flex-col justify-between border-r border-slate-800">
-                <div>
-                    <div class="p-5 border-b border-slate-800 flex items-center gap-3">
-                        <div class="w-7 h-7 bg-mua-pink text-white rounded-lg flex items-center justify-center text-xs"><i class="fa-solid fa-crown"></i></div>
-                        <span class="text-white font-black text-xs tracking-wider">WORKSPACE ADMIN</span>
-                    </div>
-                    <nav class="p-3 space-y-1">
-                        <button onclick="switchAdminSubPage('adm-dash')" id="tab-adm-dash" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-slate-800"><i class="fa-solid fa-chart-line text-mua-pink"></i> Ringkasan Utama</button>
-                        <button onclick="switchAdminSubPage('adm-orders')" id="tab-adm-orders" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-slate-800 hover:text-white transition"><i class="fa-solid fa-receipt"></i> Kelola Booking</button>
-                    </nav>
-                </div>
-                <div class="p-4 border-t border-slate-800 space-y-3">
-                    <div class="text-xs px-2"><p class="font-bold text-white" id="adm-profile-name">Administrator</p><span class="text-[9px] text-amber-400 font-mono">ROLE: SYSTEM ADMIN</span></div>
-                    <button onclick="logout()" class="w-full bg-red-600/20 text-red-400 py-2 rounded-xl text-xs font-bold hover:bg-red-600 hover:text-white transition flex items-center justify-center gap-2"><i class="fa-solid fa-power-off"></i> Logout Sesi</button>
-                </div>
-            </aside>
+        <div id="workspace-admin" class="flex-1 hidden flex flex-col">
 
-            <main class="flex-1 p-8 overflow-y-auto">
+            <header class="bg-slate-900 border-b border-slate-800 px-4 sm:px-6 py-4 flex justify-between items-center sticky top-0 z-40">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-mua-pink text-white rounded-lg flex items-center justify-center text-xs"><i class="fa-solid fa-crown"></i></div>
+                    <div>
+                        <h1 class="text-white font-black text-xs tracking-wider leading-none">WORKSPACE ADMIN</h1>
+                        <span class="text-[9px] text-slate-400 font-medium">MUA Booking Dashboard</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-[11px] font-bold text-white leading-none" id="adm-profile-name">Administrator</p>
+                        <span class="text-[9px] text-amber-400 font-mono">ROLE: SYSTEM ADMIN</span>
+                    </div>
+                    <button onclick="logout()" class="bg-red-600/20 text-red-400 px-3 py-2 rounded-xl text-xs font-bold hover:bg-red-600 hover:text-white transition flex items-center gap-2"><i class="fa-solid fa-power-off"></i> <span class="hidden sm:inline">Logout</span></button>
+                </div>
+            </header>
+
+            <main class="flex-1 p-4 sm:p-8 overflow-y-auto w-full space-y-8">
                 <section id="sub-adm-dash" class="space-y-6">
                     <h2 class="text-lg font-black text-slate-800">Metrik Statistik Global</h2>
-                    <div class="grid grid-cols-4 gap-4 text-xs font-bold">
-                        <div class="bg-white p-5 rounded-2xl border shadow-sm"><p class="text-slate-400">TOTAL BOOKING</p><h3 class="text-2xl font-black mt-1" id="adm-s-total">0</h3></div>
-                        <div class="bg-white p-5 rounded-2xl border shadow-sm"><p class="text-amber-500">PENDING DATA</p><h3 class="text-2xl font-black mt-1 text-amber-500" id="adm-s-pending">0</h3></div>
-                        <div class="bg-white p-5 rounded-2xl border shadow-sm"><p class="text-emerald-500">CONFIRMED SLOT</p><h3 class="text-2xl font-black mt-1 text-emerald-500" id="adm-s-confirm">0</h3></div>
-                        <div class="bg-white p-5 rounded-2xl border shadow-sm"><p class="text-red-500">CANCELLED ORDER</p><h3 class="text-2xl font-black mt-1 text-red-500" id="adm-s-cancel">0</h3></div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-bold">
+                        <div class="bg-white p-4 sm:p-5 rounded-2xl border shadow-sm"><p class="text-slate-400">TOTAL BOOKING</p><h3 class="text-2xl font-black mt-1" id="adm-s-total">0</h3></div>
+                        <div class="bg-white p-4 sm:p-5 rounded-2xl border shadow-sm"><p class="text-amber-500">PENDING DATA</p><h3 class="text-2xl font-black mt-1 text-amber-500" id="adm-s-pending">0</h3></div>
+                        <div class="bg-white p-4 sm:p-5 rounded-2xl border shadow-sm"><p class="text-emerald-500">CONFIRMED SLOT</p><h3 class="text-2xl font-black mt-1 text-emerald-500" id="adm-s-confirm">0</h3></div>
+                        <div class="bg-white p-4 sm:p-5 rounded-2xl border shadow-sm"><p class="text-red-500">CANCELLED ORDER</p><h3 class="text-2xl font-black mt-1 text-red-500" id="adm-s-cancel">0</h3></div>
                     </div>
                 </section>
 
-                <section id="sub-adm-orders" class="hidden space-y-4">
-                    <div class="flex justify-between items-center"><h2 class="text-lg font-black text-slate-800">Daftar Pengajuan Masuk</h2><input type="text" id="adm-search" onkeyup="filterTabelAdmin()" placeholder="Cari nama client..." class="px-4 py-1.5 border rounded-xl text-xs w-56"></div>
-                    <div class="bg-white border rounded-2xl overflow-hidden shadow-sm">
-                        <table class="w-full text-xs text-left" id="tabel-admin-main">
+                <section id="sub-adm-orders" class="space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3"><h2 class="text-lg font-black text-slate-800">Daftar Pengajuan Masuk</h2><input type="text" id="adm-search" onkeyup="filterTabelAdmin()" placeholder="Cari nama client..." class="px-4 py-1.5 border rounded-xl text-xs w-full sm:w-56"></div>
+                    <div class="bg-white border rounded-2xl overflow-x-auto shadow-sm">
+                        <table class="w-full text-xs text-left min-w-[700px]" id="tabel-admin-main">
                             <thead class="bg-slate-800 text-white font-bold"><th class="p-3">ID Booking</th><th class="p-3">Nama</th><th class="p-3">WhatsApp</th><th class="p-3">Paket</th><th class="p-3">Waktu Sesi</th><th class="p-3">Total Harga</th><th class="p-3 text-center">Tindakan</th></thead>
                             <tbody id="body-tabel-admin" class="text-slate-600"></tbody>
                         </table>
@@ -325,12 +342,17 @@
             document.getElementById('loading-layer').classList.toggle('hidden', !show);
         }
 
+        // ===== TOGGLE NAV MOBILE CUSTOMER =====
+        function toggleCustomerNav() {
+            document.getElementById('mobile-customer-nav').classList.toggle('hidden');
+        }
+
         // AMBIL DATA KATALOG SPREADSHEET SECARA DINAMIS
         function muatKatalogPaketDariSheets() {
             google.script.run.withSuccessHandler(listPaket => {
                 let container = document.getElementById('container-katalog-paket');
                 if(!listPaket || listPaket.length === 0) {
-                    container.innerHTML = `<p class="text-xs text-red-500 p-4 col-span-2 text-center">Belum ada data paket di spreadsheet PAKET_MAKEUP.</p>`;
+                    container.innerHTML = `<p class="text-xs text-red-500 p-4 col-span-1 sm:col-span-2 text-center">Belum ada data paket di spreadsheet PAKET_MAKEUP.</p>`;
                     return;
                 }
                 
@@ -410,6 +432,7 @@
                         document.getElementById('nav-customer').classList.add('hidden');
                         document.getElementById('adm-profile-name').innerText = res.nama;
                         loadAdminDashboardData();
+                        loadAdminOrdersTable();
                     } else {
                         document.getElementById('workspace-customer').classList.remove('hidden');
                         document.getElementById('nav-customer').classList.remove('hidden');
@@ -558,17 +581,6 @@
         // ====================================================================
         // BACKEND ADMIN LOGIC CONTROLLER
         // ====================================================================
-        function switchAdminSubPage(subId) {
-            document.getElementById('sub-adm-dash').classList.toggle('hidden', subId !== 'adm-dash');
-            document.getElementById('sub-adm-orders').classList.toggle('hidden', subId !== 'adm-orders');
-            
-            document.getElementById('tab-adm-dash').className = 'w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold ' + (subId==='adm-dash'?'text-white bg-slate-800':'text-slate-400 hover:bg-slate-800 hover:text-white');
-            document.getElementById('tab-adm-orders').className = 'w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold ' + (subId==='adm-orders'?'text-white bg-slate-800':'text-slate-400 hover:bg-slate-800 hover:text-white');
-            
-            if(subId === 'adm-dash') loadAdminDashboardData();
-            if(subId === 'adm-orders') loadAdminOrdersTable();
-        }
-
         function loadAdminDashboardData() {
             google.script.run.withSuccessHandler(s => {
                 document.getElementById('adm-s-total').innerText = s.total;
