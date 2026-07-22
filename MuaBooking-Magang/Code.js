@@ -1,5 +1,6 @@
 // ====================================================================
 // CORE BACKEND - SYSTEM INTEGRATION IMOMAKEUP (REVISED FULL VERSION)
+// FIX: Kolom GAMBAR di sheet PAKET_MAKEUP dibaca dari index yang benar
 // ====================================================================
 
 function doGet() {
@@ -64,6 +65,8 @@ function daftarUserBaru(username, whatsapp, password) {
 }
 
 // 3. FUNGSI AMBIL DAFTAR PAKET DARI SPREADSHEET (DINAMIS KE HALAMAN CUSTOMER)
+// STRUKTUR KOLOM SHEET "PAKET_MAKEUP":
+// A: ID_PAKET | B: NAMA_PAKET | C: harga | D: DESKRIPSI | E: STATUS_AKTIF | F: GAMBAR
 function ambilSemuaPaketMUA() {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -75,17 +78,29 @@ function ambilSemuaPaketMUA() {
     
     for (var i = 1; i < data.length; i++) {
       if (!data[i][1]) continue; // Skip jika nama paket kosong
+
+      // Ambil status aktif (Kolom E, index 4) - hanya tampilkan paket yang statusnya "Aktif"
+      var statusAktif = String(data[i][4] || "").trim().toLowerCase();
+      if (statusAktif && statusAktif !== "aktif") continue; // Skip paket yang non-aktif
+
+      // Ambil link gambar (Kolom F, index 5) - FIXED dari sebelumnya salah baca index 4
+      var linkGambar = String(data[i][5] || "").trim();
+      if (!linkGambar) {
+        linkGambar = "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=300&q=80";
+      }
+
       listPaket.push({
         id: data[i][0], // Kolom A
         nama: data[i][1], // Kolom B
         harga: Number(data[i][2]) || 0, // Kolom C
         hargaFormatted: "Rp " + (Number(data[i][2]) || 0).toLocaleString('id-ID'),
         detail: data[i][3] || "Layanan makeup premium", // Kolom D
-        gambar: data[i][4] || "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=300&q=80" // Kolom E
+        gambar: linkGambar // Kolom F (GAMBAR) - FIXED
       });
     }
     return listPaket;
   } catch(e) {
+    Logger.log("Error di ambilSemuaPaketMUA: " + e.toString());
     return [];
   }
 }
@@ -197,6 +212,7 @@ function getDashboardStats() {
   return { total: total, pending: pending, confirmed: confirmed, cancelled: cancelled };
 }
 
+// 7. DAFTAR SEMUA BOOKING UNTUK TABEL ADMIN
 function getAllBookingsAdmin() {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -234,6 +250,7 @@ function getAllBookingsAdmin() {
     return [];
   }
 }
+
 // 8. FUNGSI PERSETUJUAN ADMIN + DAFTAR DATA UNTUK TRIGGER KIRIM CHAT WHATSAPP
 function setujuiBookingDariAdmin(idBooking) {
   var ss = SpreadsheetApp.getActiveSpreadsheet(); 
