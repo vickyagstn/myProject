@@ -1,23 +1,22 @@
-
 # 💄 MUA Booking Magang
 
 <p align="center">
-  <img src="./images/cover.png" width="100%" alt="MUA Booking">
+  <img src="./images/cover.png" width="100%" alt="MUA Booking Banner">
 </p>
 
-<h2 align="center">💄 Sistem Booking Make Up Artist</h2>
+<h2 align="center">💄 Sistem Booking Make Up Artist Berbasis Web</h2>
 
 <p align="center">
-Aplikasi booking Make Up Artist (MUA) berbasis web yang membantu pelanggan melakukan pemesanan layanan secara online dan memudahkan admin dalam mengelola data booking menggunakan Google Spreadsheet dan Google Apps Script.
+Aplikasi booking jasa <b>Make Up Artist (MUA)</b> yang membantu pelanggan melakukan pemesanan secara online serta memudahkan admin dalam mengelola data booking menggunakan <b>Google Spreadsheet</b> dan <b>Google Apps Script</b>.
 </p>
 
 ---
 
 # 📖 Tentang Project
 
-**MUA Booking Magang** merupakan aplikasi booking jasa Make Up Artist yang dikembangkan sebagai project magang.
+**MUA Booking Magang** merupakan aplikasi booking jasa Make Up Artist berbasis web yang dikembangkan sebagai project magang.
 
-Aplikasi ini memungkinkan pelanggan melakukan booking secara online, sedangkan admin dapat mengelola seluruh data booking melalui Google Spreadsheet sebagai database dan Google Apps Script sebagai backend.
+Aplikasi ini memungkinkan pelanggan melakukan booking secara online dengan mudah, sedangkan admin dapat mengelola data booking, pelanggan, dan layanan melalui dashboard sederhana. Seluruh data disimpan pada **Google Spreadsheet** dan dihubungkan menggunakan **Google Apps Script** sebagai backend.
 
 ---
 
@@ -26,7 +25,8 @@ Aplikasi ini memungkinkan pelanggan melakukan booking secara online, sedangkan a
 - Mempermudah proses booking jasa MUA.
 - Mengurangi pencatatan manual.
 - Menyimpan data booking secara digital.
-- Mempermudah admin mengelola data pelanggan dan booking.
+- Mempermudah admin mengelola data pelanggan.
+- Mempermudah pengelolaan jadwal booking.
 
 ---
 
@@ -34,10 +34,16 @@ Aplikasi ini memungkinkan pelanggan melakukan booking secara online, sedangkan a
 
 ## 👤 Customer
 
-### 🔐 Login
+### 🔐 Autentikasi
 - Login Customer
 - Registrasi Akun Baru
 - Logout
+
+### 🏠 Home
+- Melihat informasi MUA
+- Melihat daftar paket makeup
+- Navigasi menuju halaman Booking
+- Navigasi menuju halaman Cek Booking
 
 ### 💄 Booking MUA
 - Mengisi Form Booking
@@ -50,7 +56,7 @@ Aplikasi ini memungkinkan pelanggan melakukan booking secara online, sedangkan a
 ### 📋 Cek Booking
 - Melihat Status Booking
 - Melihat Detail Booking
-- Melihat Paket yang Dipilih
+- Melihat Paket Makeup
 - Melihat Jadwal Booking
 
 ---
@@ -58,12 +64,12 @@ Aplikasi ini memungkinkan pelanggan melakukan booking secara online, sedangkan a
 ## 👨‍💼 Admin
 
 ### Dashboard
-- Melihat Data Booking
-- Mengelola Booking
-- Mengubah Status Booking
-- Mengelola Data Customer
-- Mengelola Paket Makeup
-- Rekap Booking
+- Melihat seluruh data booking
+- Mengelola data booking
+- Mengubah status booking
+- Mengelola data customer
+- Mengelola paket makeup
+- Rekap data booking
 
 ---
 
@@ -131,6 +137,13 @@ Gunakan akun berikut untuk mencoba aplikasi.
 |----------|----------|
 | **admin** | **admin123** |
 
+### Hak Akses
+- Dashboard Admin
+- Kelola Booking
+- Kelola Customer
+- Kelola Paket Makeup
+- Logout
+
 ---
 
 ## 👤 Customer
@@ -139,19 +152,55 @@ Gunakan akun berikut untuk mencoba aplikasi.
 |----------------|----------|
 | **085741150** | **customer12** |
 
-> **Catatan:** Akun demo hanya digunakan untuk keperluan pengujian aplikasi.
+### Hak Akses
+- Home
+- Booking MUA
+- Cek Booking
+- Logout
+
+> **Catatan:** Akun demo hanya digunakan untuk keperluan demonstrasi aplikasi.
+
+---
+
+# 🌐 Demo & Project
+
+## 🚀 Demo Aplikasi
+
+Akses aplikasi melalui Google Apps Script:
+
+**🔗 Demo Web**
+
+https://script.google.com/macros/s/AKfycbzM3lFxjWjnbO5DpK_L6u4QL72I_mPaQBpR9DCxRI8SeSXQM_PxCEaWxF3RQ3v59GZj/exec
+
+---
+
+## 📊 Database Google Spreadsheet
+
+Seluruh data booking disimpan pada Google Spreadsheet.
+
+**🔗 Spreadsheet**
+
+https://docs.google.com/spreadsheets/d/1hXezBFIxhE7BBg6iF2yRvaV7mWFTALfAtqDdbWqNPv4/edit?usp=sharing
+
+---
+
+## 💻 Source Code
+
+Repository GitHub
+
+https://github.com/vickyagstn/myProject/tree/main/MuaBooking-Magang
 
 ---
 
 # 🛠️ Teknologi
 
-| Teknologi | Fungsi |
-|-----------|--------|
-| Google Spreadsheet | Database |
-| Google Apps Script | Backend / API |
+| Teknologi | Kegunaan |
+|-----------|----------|
 | HTML | Struktur Halaman |
 | CSS | Tampilan |
 | JavaScript | Interaksi Aplikasi |
+| Google Spreadsheet | Database |
+| Google Apps Script | Backend / REST API |
 
 ---
 
@@ -162,7 +211,7 @@ Backend aplikasi menggunakan **Google Apps Script** yang terhubung langsung deng
 ### Endpoint
 
 ```text
-https://script.google.com/macros/s/AKfycbyzXSf0BCOFbBG6t_HAHXpJjt1Jow-FxZrTlgAcmX6MX21UQEpZnN1RN28XrA9BO0mG/exec
+https://script.google.com/macros/s/AKfycbzM3lFxjWjnbO5DpK_L6u4QL72I_mPaQBpR9DCxRI8SeSXQM_PxCEaWxF3RQ3v59GZj/exec
 ```
 
 ### Fungsi API
@@ -199,8 +248,8 @@ MuaBooking-Magang
 
 # 🚀 Cara Menggunakan
 
-1. Buka aplikasi melalui browser.
-2. Login menggunakan akun demo atau daftar akun baru.
+1. Buka Demo Aplikasi.
+2. Login menggunakan akun demo.
 3. Pilih paket makeup.
 4. Tentukan tanggal dan jam booking.
 5. Kirim data booking.
@@ -210,17 +259,23 @@ MuaBooking-Magang
 
 # 📱 Responsive
 
+Aplikasi dapat digunakan pada berbagai perangkat.
+
 - 💻 Desktop
 - 📱 Tablet
 - 📱 Mobile
 
 ---
 
-# 📌 Repository
+# ⭐ Kelebihan Aplikasi
 
-Project Source Code:
-
-> **https://github.com/vickyagstn/myProject/tree/main/MuaBooking-Magang**
+- Tampilan sederhana dan mudah digunakan.
+- Responsive pada berbagai perangkat.
+- Booking dilakukan secara online.
+- Data tersimpan otomatis di Google Spreadsheet.
+- Backend menggunakan Google Apps Script.
+- Mudah dikembangkan sesuai kebutuhan.
+- Mempermudah admin mengelola data booking.
 
 ---
 
@@ -234,6 +289,16 @@ Project Magang
 
 ---
 
+# 📄 Lisensi
+
+Project ini dibuat untuk keperluan pembelajaran dan project magang.
+
+---
+
 <p align="center">
-⭐ Jangan lupa berikan <b>Star</b> pada repository ini jika project ini bermanfaat.
+⭐ Jangan lupa berikan <b>Star</b> jika project ini bermanfaat.
+</p>
+
+<p align="center">
+Made with ❤️ by <b>Vicky Agustine</b>
 </p>
