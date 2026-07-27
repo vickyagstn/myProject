@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <style>
+    body { background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .bg-green-primary { background-color: #1e5e2f !important; color: white; }
+    .btn-green { background-color: #1e5e2f; color: white; }
+    .btn-green:hover { background-color: #154221; color: white; }
+    .page { display: none; }
+    .page.active { display: block; }
+    
+    /* Style Kartu Produk Berkelir Gambar Modern */
+    .product-card { cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; border: 1px solid #e2e8f0; position: relative; overflow: hidden; background: #fff; }
+    .product-card:hover { transform: scale(1.03); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .product-img-wrapper { width: 100%; height: 130px; overflow: hidden; background-color: #f8f9fa; position: relative; }
+    .product-img { width: 100%; height: 100%; object-fit: cover; }
+    
+    /* Tampilan Kotak Struk di Layar Monitor komputer Kasir */
+    .struk-box { background: #fff; border: 1px dashed #000; padding: 15px; font-family: monospace; max-width: 310px; margin: 0 auto; font-size: 13px; }
+    .nav-link { color: rgba(255,255,255,0.7); cursor: pointer; font-weight: 500; }
+    .nav-link:hover, .nav-link.active { color: white !important; font-weight: bold; }
+    .stat-card { border-radius: 8px; background-color: white; }
+    
+    /* Badge Kategori Melayang */
+    .category-badge { position: absolute; top: 8px; right: 8px; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; padding: 3px 6px; z-index: 10; }
+    .filter-btn { font-size: 13px; font-weight: 600; border-radius: 20px; padding: 5px 16px; transition: all 0.2s; }
+    .filter-btn.active { background-color: #1e5e2f !important; color: white !important; border-color: #1e5e2f !important; }
+    
+    /* Filter Kontrol Box */
+    .filter-laporan-box { background-color: white; border-radius: 8px; border: 1px solid #e2e8f0; }
+
+    /* ================= FORCE LOCK KHUSUS PRINTER THERMAL KASIR ================= */
+    @media print {
+      /* Sembunyikan semua elemen aplikasi kasir & tombol */
+      body * {
+        visibility: hidden;
+      }
+      /* Tampilkan area kertas struk secara eksklusif */
+      #print-area, #print-area * {
+        visibility: visible;
+      }
+      /* Paksa ukuran lebar struk agar mengunci maksimal 58mm - 80mm kertas thermal */
+      #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 76mm !important; /* Standar aman agar pas ditengah gulungan kertas thermal kasir */
+        max-width: 76mm !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 4px !important;
+        margin: 0 !important;
+        font-size: 11px !important; /* Ukuran teks struk padat agar hemat kertas */
+        line-height: 1.2;
+        background: transparent !important;
+      }
+      /* Matikan pembungkusan kolom otomatis bootstrap */
+      #print-area .d-flex {
+        display: flex !important;
+        justify-content: space-between !important;
+      }
+      /* Hilangkan margin kertas cetak browser */
+      @page {
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg bg-green-primary shadow-sm px-4 mb-4">
+    <div class="container-fluid">
+      <span class="navbar-brand mb-0 h1 text-white me-4 d-flex align-items-center gap-2">
+        <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=80" alt="Logo" class="rounded-circle border border-white" style="width:32px; height:32px; object-fit:cover;">
+        Warung Lontong Opor
+      </span>
+      <div class="navbar-nav me-auto flex-row gap-3">
+        <a class="nav-link active" id="menu-kasir" onclick="navigasi('page-kasir')">🛒 Kasir / POS</a>
+        <a class="nav-link" id="menu-laporan" onclick="navigasi('page-laporan')">📊 Laporan & Statistik</a>
+      </div>
+      <span class="text-white small badge bg-success p-2">Kasir Aktif</span>
+    </div>
+  </nav>
+
+  <div id="page-kasir" class="page active container-fluid">
+    <div class="row px-2">
+      <div class="col-md-8">
+        <div class="card p-3 mb-4 shadow-sm border-0">
+          
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 border-bottom pb-3 mb-3">
+            <h5 class="fw-bold text-dark mb-0">Daftar Menu Jualan</h5>
+            <div class="d-flex gap-1" id="filter-container">
+              <button class="btn btn-outline-secondary btn-sm filter-btn active" onclick="filterKategori('Semua', this)">Semua</button>
+              <button class="btn btn-outline-secondary btn-sm filter-btn" onclick="filterKategori('makanan', this)">🍽️ Makanan</button>
+              <button class="btn btn-outline-secondary btn-sm filter-btn" onclick="filterKategori('minuman', this)">🍹 Minuman</button>
+              <button class="btn btn-outline-secondary btn-sm filter-btn" onclick="filterKategori('snack', this)">🍿 Snack</button>
+            </div>
+          </div>
+
+          <div id="produk-container" class="row g-3">
+            <div class="text-center text-muted py-4">Memuat daftar menu dari spreadsheet...</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card p-3 shadow-sm border-0 sticky-top" style="top: 20px;">
+          <h5 class="fw-bold mb-3 text-dark border-bottom pb-2">🛒 Keranjang Belanja</h5>
+          <div id="cart-items" style="max-height: 250px; overflow-y: auto;" class="mb-3">
+            <p class="text-center text-muted py-4 empty-cart-msg">Keranjang masih kosong</p>
+          </div>
+          <hr>
+          <div class="d-flex justify-content-between fw-bold mb-3 fs-4 text-success">
+            <span>Total:</span>
+            <span id="cart-total">Rp0</span>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-muted">Tipe Pesanan</label>
+            <select id="tipe-order" class="form-select fw-bold text-dark">
+              <option value="Dine In">🍽️ Dine In (Makan di Sini)</option>
+              <option value="Take Away">🛍️ Take Away (Bawa Pulang)</option>
+            </select>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-muted">Pilih Metode Pembayaran</label>
+            <select id="metode-bayar" class="form-select" onchange="toggleMetodeBayar()">
+              <option value="CASH">💰 CASH (Tunai)</option>
+              <option value="QRIS">📱 QRIS (E-Wallet)</option>
+            </select>
+          </div>
+
+          <div id="input-cash-box" class="mb-3">
+            <label class="form-label small text-muted fw-bold">Uang Diterima (Rp)</label>
+            <input type="number" id="uang-bayar" class="form-control form-control-lg text-success fw-bold" oninput="hitungKembalian()" placeholder="0">
+            <div class="d-flex justify-content-between mt-2 pt-2 border-top text-muted">
+              <span>Kembalian:</span>
+              <span id="uang-kembalian" class="fw-bold text-danger fs-5">Rp0</span>
+            </div>
+          </div>
+
+          <div id="input-qris-box" class="mb-3 text-center d-none bg-light p-3 rounded">
+            <p class="small text-muted mb-2 fw-bold">Silakan Scan Kode QRIS berikut:</p>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=WarungLontongOpor" alt="QRIS Code" class="img-thumbnail mb-2" style="width:140px;">
+          </div>
+
+          <button onclick="prosesCheckout()" class="btn btn-green w-100 py-3 fw-bold fs-5 shadow-sm">💵 Proses Bayar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-laporan" class="page container">
+    
+    <div class="p-3 mb-4 filter-laporan-box shadow-sm d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div class="d-flex align-items-center gap-2">
+        <span class="fs-5">📅</span>
+        <h5 class="fw-bold text-dark mb-0">Filter Jangka Waktu Laporan</h5>
+      </div>
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <select id="filter-rentang-waktu" class="form-select form-select-sm fw-bold text-dark" style="width: 200px;" onchange="prosesLaporanDanStatistik()">
+          <option value="semua">📋 Semua Riwayat</option>
+          <option value="hari-ini">☀️ Hari Ini</option>
+          <option value="seminggu">🗓️ Kurun Waktu Seminggu</option>
+          <option value="sebulan">📅 Kurun Waktu Sebulan</option>
+          <option value="setahun">📊 Kurun Waktu Setahun</option>
+          <option value="tahunan">🗂️ Rekap Tahunan Spesifik</option>
+        </select>
+        
+        <select id="filter-tahun-spesifik" class="form-select form-select-sm fw-bold text-dark d-none" style="width: 130px;" onchange="prosesLaporanDanStatistik()">
+          <option value="2026">Tahun 2026</option>
+          <option value="2025">Tahun 2025</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-md-4">
+        <div class="card p-3 shadow-sm border-start border-success border-4 stat-card">
+          <small class="text-muted fw-bold text-uppercase">💰 Total Omset Pendapatan</small>
+          <h2 class="fw-bold text-success mt-1" id="stat-omset">Rp0</h2>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card p-3 shadow-sm border-start border-primary border-4 stat-card">
+          <small class="text-muted fw-bold text-uppercase">📦 Jumlah Transaksi</small>
+          <h2 class="fw-bold text-primary mt-1" id="stat-transaksi">0 Tx</h2>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card p-3 shadow-sm border-start border-warning border-4 stat-card">
+          <small class="text-muted fw-bold text-uppercase">💳 Rata-rata Nilai Nota</small>
+          <h2 class="fw-bold text-warning mt-1" id="stat-rata">Rp0</h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-md-6">
+        <div class="card p-3 shadow-sm border-0 h-100">
+          <h6 class="fw-bold text-dark mb-3">📊 Ringkasan Tipe Pesanan</h6>
+          <table class="table table-bordered table-sm align-middle mb-0 text-center small">
+            <thead class="table-light">
+              <tr>
+                <th>Tipe Pesanan</th>
+                <th>Total Transaksi</th>
+                <th>Total Omset</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-start">🍽️ Dine In (Makan di Sini)</td>
+                <td id="count-dinein" class="fw-bold">0</td>
+                <td id="omset-dinein" class="text-success fw-bold">Rp0</td>
+              </tr>
+              <tr>
+                <td class="text-start">🛍️ Take Away (Bawa Pulang)</td>
+                <td id="count-takeaway" class="fw-bold">0</td>
+                <td id="omset-takeaway" class="text-success fw-bold">Rp0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card p-3 shadow-sm border-0 h-100">
+          <h6 class="fw-bold text-dark mb-1">📈 Grafik Tren Pendapatan</h6>
+          <div id="chart-pendapatan" style="width: 100%; height: 180px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 mb-5">
+        <div class="card p-3 shadow-sm border-0">
+          <h5 class="fw-bold mb-3 text-dark">📋 Buku Laporan Riwayat Penjualan</h5>
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle small">
+              <thead class="table-dark">
+                <tr>
+                  <th>No ID Transaksi</th>
+                  <th>Tanggal & Waktu Transaksi</th>
+                  <th>Metode & Tipe Order</th>
+                  <th class="text-end">Total Bayar</th>
+                </tr>
+              </thead>
+              <tbody id="laporan-tbody">
+                <tr><td colspan="4" class="text-center text-muted">Memuat tabel laporan...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-struk" class="page py-4 bg-light" style="min-height: 100vh;">
+    <div class="container text-center">
+      
+      <div class="struk-box text-start shadow-sm mb-4" id="print-area">
+        <center>
+          <h6 class="fw-bold mb-0" style="font-size: 14px;">WARUNG LONTONG OPOR</h6>
+          <small style="font-size: 10px; display: block; line-height: 1.3;" class="text-muted">Jl. A. Yani No.66, Gilingan, Kec. Banjarsari, Kota Surakarta</small>
+        </center>
+        <hr style="border-top: 1px dashed #000; margin: 6px 0;">
+        <div style="font-size: 10px;">
+          <div class="d-flex justify-content-between"><span>No. Nota:</span><span id="st-id" class="fw-bold">TRX-xxx</span></div>
+          <div class="d-flex justify-content-between"><span>Tanggal:</span><span id="st-tgl">dd/mm/yyyy xx:xx</span></div>
+          <div class="d-flex justify-content-between"><span>Tipe/Metode:</span><span id="st-metode">CASH (Dine In)</span></div>
+        </div>
+        <hr style="border-top: 1px dashed #000; margin: 6px 0;">
+        <div id="st-items" style="font-size: 10px;"></div>
+        <hr style="border-top: 1px dashed #000; margin: 6px 0;">
+        <div class="d-flex justify-content-between fw-bold" style="font-size: 11px;">
+          <span>TOTAL BELANJA</span>
+          <span id="st-total">Rp0</span>
+        </div>
+        <div class="d-flex justify-content-between" style="font-size: 10px;">
+          <span>Uang Tunai</span>
+          <span id="st-bayar">Rp0</span>
+        </div>
+        <div class="d-flex justify-content-between" style="font-size: 10px;">
+          <span>Kembalian</span>
+          <span id="st-kembali">Rp0</span>
+        </div>
+        <hr style="border-top: 1px dashed #000; margin: 6px 0;">
+        <center style="font-size: 10px;" class="text-muted mt-1">
+          Terima kasih atas kunjungan Anda!<br>--- Selamat Menikmati ---
+        </center>
+      </div>
+
+      <div class="mt-3">
+        <button onclick="window.print()" class="btn btn-dark btn-sm px-4 me-2">🖨️ Cetak Struk</button>
+        <button onclick="kembaliKeKasir()" class="btn btn-green btn-sm px-4">🔄 Transaksi Baru</button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <script>
+    let masterProduk = [];
+    let keranjang = [];
+    let totalBelanja = 0;
+    let dataTransaksiGlobal = [];
+    let kategoriAktif = 'Semua';
+
+    google.charts.load('current', {'packages':['corechart']});
+
+    window.onload = function() {
+      loadDataAwal();
+    };
+
+    function navigasi(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+      
+      document.getElementById(pageId).classList.add('active');
+      if(pageId === 'page-kasir') {
+        document.getElementById('menu-kasir').classList.add('active');
+      } else if(pageId === 'page-laporan') {
+        document.getElementById('menu-laporan').classList.add('active');
+        prosesLaporanDanStatistik();
+      }
+    }
+
+    function switchPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+    }
+
+    function loadDataAwal() {
+      google.script.run.withSuccessHandler(function(produk) {
+        masterProduk = produk;
+        renderProduk();
+      }).getProduk();
+
+      google.script.run.withSuccessHandler(function(riwayat) {
+        dataTransaksiGlobal = riwayat;
+        renderRiwayat(riwayat);
+      }).getRiwayatTransaksi();
+    }
+
+    function filterKategori(kategori, btnElemen) {
+      kategoriAktif = kategori;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      btnElemen.classList.add('active');
+      renderProduk();
+    }
+
+    function renderProduk() {
+      let html = '';
+      if(!masterProduk || masterProduk.length === 0) {
+        document.getElementById('produk-container').innerHTML = '<div class="text-center text-muted py-3">Belum ada produk di database.</div>';
+        return;
+      }
+
+      let listTerfilter = masterProduk;
+      if (kategoriAktif !== 'Semua') {
+        listTerfilter = masterProduk.filter(p => (p.kategori || '').toLowerCase() === kategoriAktif.toLowerCase());
+      }
+
+      if(listTerfilter.length === 0) {
+        document.getElementById('produk-container').innerHTML = '<div class="text-center text-muted py-4">Menu kategori ini tidak ditemukan.</div>';
+        return;
+      }
+
+      listTerfilter.forEach(p => {
+        let id_produk = p.id_produk || p.id_product;
+        let nama_produk = p.nama_produk || p.nama;
+        let harga = p.harga;
+        let kategori = (p.kategori || 'makanan').toLowerCase();
+        
+        let linkGambar = p.gambar || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400';
+
+        let badgeColor = 'bg-success text-white';
+        if(kategori === 'minuman') badgeColor = 'bg-primary text-white';
+        if(kategori === 'snack') badgeColor = 'bg-warning text-dark';
+
+        html += `
+          <div class="col-lg-4 col-md-6 col-sm-6">
+            <div class="card h-100 product-card rounded-3 shadow-sm" onclick="tambahKeKeranjang(${id_produk})">
+              <span class="badge ${badgeColor} category-badge shadow-sm">${kategori}</span>
+              <div class="product-img-wrapper">
+                <img src="${linkGambar}" class="product-img" alt="${nama_produk}" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400'">
+              </div>
+              <div class="card-body p-3 text-center">
+                <div class="fw-bold text-dark text-truncate mb-1" style="font-size: 13px;">${nama_produk}</div>
+                <div class="text-success fw-bold" style="font-size: 15px;">Rp${Number(harga).toLocaleString('id-ID')}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      document.getElementById('produk-container').innerHTML = html;
+    }
+
+    function tambahKeKeranjang(id) {
+      let prod = masterProduk.find(p => (p.id_produk || p.id_product) == id);
+      if(!prod) return;
+
+      let id_prod = prod.id_produk || prod.id_product;
+      let nama_prod = prod.nama_produk || prod.nama;
+      let itemInCart = keranjang.find(k => k.id_produk == id_prod);
+      
+      if(itemInCart) {
+        itemInCart.qty += 1;
+        itemInCart.subtotal = itemInCart.qty * itemInCart.harga;
+      } else {
+        keranjang.push({
+          id_produk: id_prod,
+          nama_produk: nama_prod,
+          harga: Number(prod.harga) || 0,
+          qty: 1,
+          subtotal: Number(prod.harga) || 0
+        });
+      }
+      updateKeranjangUI();
+    }
+
+    function ubahQty(id, delta) {
+      let item = keranjang.find(k => k.id_produk == id);
+      if(item) {
+        item.qty += delta;
+        item.subtotal = item.qty * item.harga;
+        if(item.qty <= 0) {
+          keranjang = keranjang.filter(k => k.id_produk != id);
+        }
+      }
+      updateKeranjangUI();
+    }
+
+    function updateKeranjangUI() {
+      const container = document.getElementById('cart-items');
+      if(keranjang.length === 0) {
+        container.innerHTML = '<p class="text-center text-muted py-4 empty-cart-msg">Keranjang masih kosong</p>';
+        document.getElementById('cart-total').innerText = "Rp0";
+        totalBelanja = 0;
+        return;
+      }
+
+      let html = '';
+      totalBelanja = 0;
+      keranjang.forEach(k => {
+        totalBelanja += k.subtotal;
+        html += `
+          <div class="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2 small">
+            <div style="max-width: 55%;">
+              <strong class="text-dark">${k.nama_produk}</strong><br>
+              <span class="text-muted small">@Rp${Number(k.harga).toLocaleString('id-ID')}</span>
+            </div>
+            <div class="d-flex align-items-center">
+              <button class="btn btn-sm btn-outline-secondary px-2 py-0 me-1" onclick="ubahQty(${k.id_produk}, -1)">-</button>
+              <span class="mx-1 fw-bold">${k.qty}</span>
+              <button class="btn btn-sm btn-outline-secondary px-2 py-0 ms-1" onclick="ubahQty(${k.id_produk}, 1)">+</button>
+            </div>
+            <div class="fw-bold text-dark">Rp${Number(k.subtotal).toLocaleString('id-ID')}</div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+      document.getElementById('cart-total').innerText = "Rp" + totalBelanja.toLocaleString('id-ID');
+      hitungKembalian();
+    }
+
+    function toggleMetodeBayar() {
+      const m = document.getElementById('metode-bayar').value;
+      if(m === 'CASH') {
+        document.getElementById('input-cash-box').classList.remove('d-none');
+        document.getElementById('input-qris-box').classList.add('d-none');
+      } else {
+        document.getElementById('input-cash-box').classList.add('d-none');
+        document.getElementById('input-qris-box').classList.remove('d-none');
+      }
+    }
+
+    function hitungKembalian() {
+      const ub = Number(document.getElementById('uang-bayar').value) || 0;
+      let kembali = ub - totalBelanja;
+      if(kembali < 0) kembali = 0;
+      document.getElementById('uang-kembalian').innerText = "Rp" + kembali.toLocaleString('id-ID');
+    }
+
+    function prosesCheckout() {
+      if(keranjang.length === 0) return alert('Peringatan: Keranjang belanja kosong!');
+      
+      const tipe = document.getElementById('tipe-order').value; 
+      const m = document.getElementById('metode-bayar').value;
+      const ub = Number(document.getElementById('uang-bayar').value) || 0;
+      
+      if(m === 'CASH' && ub < totalBelanja) {
+        return alert('Gagal: Uang tunai yang dibayarkan kurang!');
+      }
+
+      let metodeGabungan = m + " (" + tipe + ")";
+
+      let payload = {
+        total: totalBelanja,
+        metode: metodeGabungan, 
+        items: keranjang
+      };
+
+      google.script.run.withSuccessHandler(function(res) {
+        if(res.success) {
+          document.getElementById('st-id').innerText = res.id_transaksi || 'TRX-xxx';
+          document.getElementById('st-tgl').innerText = res.tanggal;
+          document.getElementById('st-metode').innerText = metodeGabungan;
+          document.getElementById('st-total').innerText = "Rp" + totalBelanja.toLocaleString('id-ID');
+          
+          let bayarText = m === 'CASH' ? ub : totalBelanja;
+          let kembaliText = m === 'CASH' ? (ub - totalBelanja) : 0;
+          document.getElementById('st-bayar').innerText = "Rp" + bayarText.toLocaleString('id-ID');
+          document.getElementById('st-kembali').innerText = "Rp" + kembaliText.toLocaleString('id-ID');
+
+          // Menyesuaikan penulisan menu barang belanjaan agar selaras kanan dan kiri
+          let itemsHtml = '';
+          keranjang.forEach(k => {
+            itemsHtml += `
+              <div class="d-flex justify-content-between mb-1">
+                <span style="max-width: 65%; text-align: left; display: inline-block;">${k.nama_produk} x${k.qty}</span>
+                <span style="display: inline-block; text-align: right;">Rp${Number(k.subtotal).toLocaleString('id-ID')}</span>
+              </div>`;
+          });
+          document.getElementById('st-items').innerHTML = itemsHtml;
+
+          switchPage('page-struk');
+        } else {
+          alert('Error Server: ' + res.message);
+        }
+      }).simpanTransaksi(payload);
+    }
+
+    function renderRiwayat(list) {
+      let html = '';
+      if(!list || list.length === 0) return;
+      
+      const terbalik = [...list].reverse().slice(0, 5);
+      terbalik.forEach(r => {
+        let id_tx = r.id_transaksi || r.id_tx || '-';
+        let tgl = String(r.tanggal || '-').substring(0,16);
+        let tot = Number(r.total) || 0;
+        let met = r.metode || 'CASH';
+
+        html += `
+          <tr>
+            <td><strong>${id_tx}</strong></td>
+            <td>${tgl}</td>
+            <td>Rp${tot.toLocaleString('id-ID')}</td>
+            <td><span class="badge ${met.includes('CASH')?'bg-success':'bg-primary'}">${met}</span></td>
+          </tr>
+        `;
+      });
+      document.getElementById('riwayat-tbody').innerHTML = html;
+    }
+
+    function kembaliKeKasir() {
+      keranjang = [];
+      document.getElementById('uang-bayar').value = "";
+      updateKeranjangUI();
+      loadDataAwal();
+      navigasi('page-kasir');
+    }
+
+    function prosesLaporanDanStatistik() {
+      const modeRentang = document.getElementById('filter-rentang-waktu').value;
+      const elemenTahunSpesifik = document.getElementById('filter-tahun-spesifik');
+      
+      if (modeRentang === 'tahunan') {
+        elemenTahunSpesifik.classList.remove('d-none');
+      } else {
+        elemenTahunSpesifik.classList.add('d-none');
+      }
+
+      google.script.run.withSuccessHandler(function(listTx) {
+        dataTransaksiGlobal = listTx;
+        
+        let totalOmset = 0;
+        let htmlTbody = '';
+        let grafikDataMap = {}; 
+
+        let countDI = 0, omsetDI = 0;
+        let countTA = 0, omsetTA = 0;
+        let totalTerfilterCount = 0;
+
+        if(!listTx || listTx.length === 0) {
+          document.getElementById('laporan-tbody').innerHTML = '<tr><td colspan="4" class="text-center text-muted">Belum ada riwayat transaksi tercatat.</td></tr>';
+          return;
+        }
+
+        const sekarang = new Date();
+        const hariIni = new Date(sekarang.getFullYear(), sekarang.getMonth(), sekarang.getDate());
+
+        const satuMingguLalu = new Date(hariIni); satuMingguLalu.setDate(hariIni.getDate() - 7);
+        const satuBulanLalu = new Date(hariIni); satuBulanLalu.setMonth(hariIni.getMonth() - 1);
+        const satuTahunLalu = new Date(hariIni); satuTahunLalu.setFullYear(hariIni.getFullYear() - 1);
+
+        listTx.forEach(tx => {
+          let nominal = Number(tx.total) || 0;
+          let id_tx = tx.id_transaksi || '-';
+          let tglRaw = tx.tanggal;
+          let met = tx.metode || 'CASH';
+
+          if (!tglRaw) return;
+
+          let objekTanggal = new Date(tglRaw);
+          let tglString = String(tglRaw);
+          
+          if (tglString.includes('/') && isNaN(objekTanggal.getTime())) {
+            try {
+              let bagianSlashed = tglString.split(' ')[0]; 
+              let partTgl = bagianSlashed.split('/');
+              if (partTgl.length === 3) {
+                objekTanggal = new Date(Number(partTgl[2]), Number(partTgl[1]) - 1, Number(partTgl[0]));
+              }
+            } catch(e) {
+              console.log("Error parsing format: ", e);
+            }
+          }
+
+          if (isNaN(objekTanggal.getTime())) return;
+
+          const tanggalTransaksiMurni = new Date(objekTanggal.getFullYear(), objekTanggal.getMonth(), objekTanggal.getDate());
+
+          let tglMurni = ("0" + objekTanggal.getDate()).slice(-2) + "/" + ("0" + (objekTanggal.getMonth() + 1)).slice(-2) + "/" + objekTanggal.getFullYear();
+          let tglTampilanTabel = tglMurni + " " + ("0" + objekTanggal.getHours()).slice(-2) + ":" + ("0" + objekTanggal.getMinutes()).slice(-2);
+
+          let lolosFilter = true;
+
+          if (modeRentang === 'hari-ini') {
+            if (tanggalTransaksiMurni.getTime() !== hariIni.getTime()) lolosFilter = false;
+          } else if (modeRentang === 'seminggu') {
+            if (tanggalTransaksiMurni < satuMingguLalu || tanggalTransaksiMurni > hariIni) lolosFilter = false;
+          } else if (modeRentang === 'sebulan') {
+            if (tanggalTransaksiMurni < satuBulanLalu || tanggalTransaksiMurni > hariIni) lolosFilter = false;
+          } else if (modeRentang === 'setahun') {
+            if (tanggalTransaksiMurni < satuTahunLalu || tanggalTransaksiMurni > hariIni) lolosFilter = false;
+          } else if (modeRentang === 'tahunan') {
+            const tahunPilihan = elemenTahunSpesifik.value;
+            if (String(objekTanggal.getFullYear()) !== tahunPilihan) lolosFilter = false;
+          }
+
+          if (lolosFilter) {
+            totalTerfilterCount++;
+            totalOmset += nominal;
+
+            if(met.includes("Dine In")) {
+              countDI += 1;
+              omsetDI += nominal;
+            } else if(met.includes("Take Away")) {
+              countTA += 1;
+              omsetTA += nominal;
+            }
+
+            htmlTbody += `
+              <tr>
+                <td><strong>${id_tx}</strong></td>
+                <td>${tglTampilanTabel}</td>
+                <td><span class="badge ${met.includes('CASH')?'bg-success':'bg-primary'}">${met}</span></td>
+                <td class="text-end fw-bold text-dark">Rp${nominal.toLocaleString('id-ID')}</td>
+              </tr>
+            `;
+
+            if(grafikDataMap[tglMurni]) {
+              grafikDataMap[tglMurni] += nominal;
+            } else {
+              grafikDataMap[tglMurni] = nominal;
+            }
+          }
+        });
+
+        document.getElementById('count-dinein').innerText = countDI + " Nota";
+        document.getElementById('omset-dinein').innerText = "Rp" + omsetDI.toLocaleString('id-ID');
+        document.getElementById('count-takeaway').innerText = countTA + " Nota";
+        document.getElementById('omset-takeaway').innerText = "Rp" + omsetTA.toLocaleString('id-ID');
+
+        document.getElementById('stat-omset').innerText = "Rp" + totalOmset.toLocaleString('id-ID');
+        document.getElementById('stat-transaksi').innerText = totalTerfilterCount + " Tx";
+        
+        let rataRata = totalTerfilterCount > 0 ? Math.round(totalOmset / totalTerfilterCount) : 0;
+        document.getElementById('stat-rata').innerText = "Rp" + rataRata.toLocaleString('id-ID');
+        
+        if(totalTerfilterCount === 0) {
+          document.getElementById('laporan-tbody').innerHTML = '<tr><td colspan="4" class="text-center text-muted">Tidak ada transaksi pada jangka waktu ini.</td></tr>';
+        } else {
+          document.getElementById('laporan-tbody').innerHTML = htmlTbody;
+        }
+
+        drawChartPendapatan(grafikDataMap);
+
+      }).getRiwayatTransaksi();
+    }
+
+    function drawChartPendapatan(dataMap) {
+      if (typeof google.visualization === 'undefined' || !google.visualization.arrayToDataTable) {
+        setTimeout(function() { drawChartPendapatan(dataMap); }, 400);
+        return;
+      }
+
+      let chartDataArray = [['Tanggal', 'Pendapatan']];
+      for (let tgl in dataMap) {
+        chartDataArray.push([tgl, dataMap[tgl]]);
+      }
+
+      if(chartDataArray.length === 1) {
+        chartDataArray.push(['Tidak Ada Data', 0]);
+      }
+
+      let data = google.visualization.arrayToDataTable(chartDataArray);
+      let options = {
+        hAxis: { textStyle: { fontSize: 10 } },
+        vAxis: { minValue: 0 },
+        colors: ['#1e5e2f'],
+        legend: { position: 'none' },
+        chartArea: { width: '85%', height: '75%' }
+      };
+
+      let chart = new google.visualization.ColumnChart(document.getElementById('chart-pendapatan'));
+      chart.draw(data, options);
+    }
+  </script>
+</body>
+</html>
